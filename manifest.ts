@@ -1,4 +1,5 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
+import ephemeralWorkflow from "./workflows/ephemeral_workflow.ts";
 import GreetingWorkflow from "./workflows/greeting_workflow.ts";
 
 /**
@@ -11,7 +12,12 @@ export default Manifest({
   description:
     "A sample that demonstrates using a function, workflow and trigger to send a greeting",
   icon: "assets/default_new_app_icon.png",
-  workflows: [GreetingWorkflow],
+  workflows: [GreetingWorkflow, ephemeralWorkflow],
   outgoingDomains: [],
-  botScopes: ["commands", "chat:write", "chat:write.public"],
+  botScopes: [
+    "commands",
+    "chat:write",
+    "chat:write.public",
+    "reactions:read",
+  ],
 });
