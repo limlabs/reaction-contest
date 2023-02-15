@@ -17,19 +17,16 @@ export const AddEmojiToDatastoreFunctionDefinition = DefineFunction({
 export default SlackFunction(
   AddEmojiToDatastoreFunctionDefinition,
   async ({ inputs, client }) => {
-    console.log("emojiiii", inputs.emoji);
     const responseGet = await client.apps.datastore.get({
       datastore: "emoji_datastore",
       id: inputs.emoji,
     });
-    console.log("responseGet ", responseGet);
     if (!responseGet.ok) {
       const error = `Failed to get a row from datastore: ${responseGet.error}`;
       return { error };
     }
 
     let dataToInsert;
-    console.log("responseGet.items", responseGet.items);
 
     if (Object.keys(responseGet.item).length === 0) {
       dataToInsert = { emoji: inputs.emoji, quantity: 1 };

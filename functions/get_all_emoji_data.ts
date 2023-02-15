@@ -5,26 +5,36 @@ export const GetAllEmojiDataDefinition = DefineFunction({
   title: "Get all emoji data",
   description: "Gets all emoji data from datastore",
   source_file: "functions/get_all_emoji_data.ts",
-  output_parameters: {
-    properties: {
-      all_emojis: {
-        type: Schema.types.object,
-      },
-    },
-    required: ["all_emojis"],
-  },
+  // output_parameters: {
+  //   properties: {
+  //     topTen: {
+  //       type: Schema.types.array,
+  //       items: {
+  //         type: Schema.types.object,
+  //       },
+  //     },
+  //   },
+  //   required: ["topTen"],
+  // },
 });
 
 export default SlackFunction(
   GetAllEmojiDataDefinition,
-  async ({ client }) => {
-    const response = await client.apps.datastore.query({
+  async ({ inputs, client }) => {
+    const { ok, items, error } = await client.apps.datastore.query({
       datastore: "emoji_datastore",
     });
-    console.log("all emojis ", response);
+    if (!ok) {
+      const err = `Failed to get data from datastore: ${error}`;
+      return { err };
+    }
+    items.sort((a, b) => b.quantity - a.quantity);
+    const topTen = items.filter((item) => items.indexOf(item) < 10);
+    console.log("top ten", topTen);
     return {
       outputs: {
-        all_emojis: response,
+        topTen: topTen,
+        userId: inputs.userId,
       },
     };
   },

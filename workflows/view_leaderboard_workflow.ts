@@ -14,9 +14,19 @@ const ViewLeaderboardWorkflow = DefineWorkflow({
   },
 });
 
-const allEmojis = ViewLeaderboardWorkflow.addStep(
+// const topTenEmojisArr =
+ViewLeaderboardWorkflow.addStep(
   GetAllEmojiDataDefinition,
-  {},
+  { userId: ViewLeaderboardWorkflow.inputs.userId },
 );
+
+// ViewLeaderboardWorkflow.addStep(
+//   Schema.slack.functions.SendEphemeralMessage,
+//   {
+//     channel_id: "C04NSNR0Q6P",
+//     user_id: ViewLeaderboardWorkflow.inputs.userId,
+//     message: `Top Ten: ${topTenEmojisArr}`,
+//   },
+// );
 
 export default ViewLeaderboardWorkflow;

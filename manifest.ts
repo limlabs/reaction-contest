@@ -23,6 +23,7 @@ export default Manifest({
   ],
   outgoingDomains: [],
   datastores: [EmojiDatastore],
+  functions: [],
   botScopes: [
     "commands",
     "chat:write",
