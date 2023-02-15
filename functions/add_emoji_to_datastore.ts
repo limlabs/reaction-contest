@@ -25,7 +25,6 @@ export default SlackFunction(
     console.log("responseGet ", responseGet);
     if (!responseGet.ok) {
       const error = `Failed to get a row from datastore: ${responseGet.error}`;
-      console.log("HEY THE GET FAILED");
       return { error };
     }
 
