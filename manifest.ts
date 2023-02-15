@@ -1,4 +1,6 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
+import { EmojiDatastore } from "./datastores/emoji_datastore.ts";
+import AddEmojiToDatastoreWorkflow from "./workflows/add_emoji_to_datastore_workflow.ts";
 import ephemeralWorkflow from "./workflows/ephemeral_workflow.ts";
 import GreetingWorkflow from "./workflows/greeting_workflow.ts";
 
@@ -12,12 +14,18 @@ export default Manifest({
   description:
     "A sample that demonstrates using a function, workflow and trigger to send a greeting",
   icon: "assets/default_new_app_icon.png",
-  workflows: [GreetingWorkflow, ephemeralWorkflow],
+  workflows: [GreetingWorkflow, ephemeralWorkflow, AddEmojiToDatastoreWorkflow],
   outgoingDomains: [],
+  datastores: [EmojiDatastore],
   botScopes: [
     "commands",
     "chat:write",
     "chat:write.public",
     "reactions:read",
+    "datastore:read",
+    "datastore:write",
   ],
 });
+
+// {"datastore": "emoji_datastore", "item": {"emoji": "smiley", "quantity": 1}}
+// {"item": {"emoji": "smiley", "quantity": 1}, "datastore": "emoji_datastore"}
