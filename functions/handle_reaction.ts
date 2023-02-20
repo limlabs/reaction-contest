@@ -48,7 +48,7 @@ export default SlackFunction(
 
     await saveReaction(client, event);
 
-    console.log(`reaction added, id ${event.id}`);
+    console.log(`reaction ${event.action}, id ${event.id}`);
 
     return { outputs: { id: event.id } };
   },
