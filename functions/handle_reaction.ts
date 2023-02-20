@@ -1,6 +1,6 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import { ReactionEventType } from "../core/models.ts";
 import { saveReaction } from "../datastores/reaction_datastore.ts";
+import { createReactionEvent, ReactionEventType } from "../domain/reaction.ts";
 
 export const HandleReactionFunction = DefineFunction({
   callback_id: "handle_reaction",
@@ -37,14 +37,12 @@ export const HandleReactionFunction = DefineFunction({
 export default SlackFunction(
   HandleReactionFunction,
   async ({ inputs, client }) => {
-    const event = {
-      id: crypto.randomUUID(),
+    const event = createReactionEvent({
       channelId: inputs.channelId,
       userId: inputs.userId,
       shortcode: inputs.reaction,
       action: inputs.action as ReactionEventType,
-      timestamp: Date.now(),
-    };
+    });
 
     await saveReaction(client, event);
 

@@ -1,7 +1,7 @@
 import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
 import { appPrefix } from "../core/config.ts";
-import { ReactionEvent } from "../core/models.ts";
+import { ReactionEvent } from "../domain/reaction.ts";
 
 export const ReactionDatastoreName = `${appPrefix}-reactions`;
 

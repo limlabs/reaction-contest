@@ -20,22 +20,19 @@ export const GetAllEmojiDataDefinition = DefineFunction({
 
 export default SlackFunction(
   GetAllEmojiDataDefinition,
-  async ({ inputs, client }) => {
+  async ({ client }) => {
     const { ok, items, error } = await client.apps.datastore.query({
       datastore: "emoji_datastore",
     });
     if (!ok) {
       const err = `Failed to get data from datastore: ${error}`;
-      return { err };
+      return { error: err };
     }
     items.sort((a, b) => b.quantity - a.quantity);
     const topTen = items.filter((item) => items.indexOf(item) < 10);
     console.log("top ten", topTen);
     return {
-      outputs: {
-        topTen: topTen,
-        userId: inputs.userId,
-      },
+      outputs: {},
     };
   },
 );
