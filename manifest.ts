@@ -1,9 +1,9 @@
 import { Manifest } from "deno-slack-sdk/mod.ts";
-import { EmojiDatastore } from "./datastores/emoji_datastore.ts";
-import AddEmojiToDatastoreWorkflow from "./workflows/add_emoji_to_datastore_workflow.ts";
+import { ReactionDatastore } from "./datastores/reaction_datastore.ts";
 import ephemeralWorkflow from "./workflows/ephemeral_workflow.ts";
 import GreetingWorkflow from "./workflows/greeting_workflow.ts";
 import ViewLeaderboardWorkflow from "./workflows/view_leaderboard_workflow.ts";
+import HandleReactionAddedWorkflow from "./workflows/handle_reaction_workflow.ts";
 
 /**
  * The app manifest contains the app's configuration. This
@@ -18,11 +18,11 @@ export default Manifest({
   workflows: [
     GreetingWorkflow,
     ephemeralWorkflow,
-    AddEmojiToDatastoreWorkflow,
+    HandleReactionAddedWorkflow,
     ViewLeaderboardWorkflow,
   ],
   outgoingDomains: [],
-  datastores: [EmojiDatastore],
+  datastores: [ReactionDatastore],
   functions: [],
   botScopes: [
     "commands",
