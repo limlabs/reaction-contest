@@ -36,6 +36,8 @@ export const saveReaction = async (
   }
 };
 
+// TODO: Ensure we return as many results as possible (for now)
+// Eventually we will need to handle pagination.
 export const getReactionsSince = async (
   client: SlackAPIClient,
   since: number,

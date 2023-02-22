@@ -15,6 +15,7 @@ export const LeaderboardDatastore = DefineDatastore({
   },
 });
 
+// TODO: save new updated time
 export const saveLeaderboard = async (
   client: SlackAPIClient,
   leaderboard: ReactionLeaderboard,
