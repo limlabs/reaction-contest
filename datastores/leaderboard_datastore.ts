@@ -42,7 +42,12 @@ export const getLastUpdated = async (
     datastore: LeaderboardDatastoreName,
   });
 
-  console.log("getLastUpdated response.items", response.items);
+  console.log(
+    "getLastUpdated response",
+    response,
+    "getLastUpdated response.items",
+    response.items,
+  );
   if (!response.ok) {
     throw new Error(
       `failed to get leaderboard from datastore: ${response.error}`,
