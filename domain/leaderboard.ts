@@ -24,8 +24,14 @@ export const createReactionLeaderboard = (
 
 export const topReactions = (
   events: ReactionEvent[],
+  oldLeaderboardArr: ReactionLeaderboardEntry[],
   limit = 10,
 ): ReactionLeaderboardEntry[] => {
+  const oldLeaderboardObj: Record<string, number> = {};
+  for (const item of oldLeaderboardArr) {
+    oldLeaderboardObj[item.reaction] = item.count;
+  }
+
   const totals = events.reduce((acc, event) => {
     if (!acc[event.shortcode]) {
       acc[event.shortcode] = 0;
@@ -35,7 +41,7 @@ export const topReactions = (
 
     if (acc[event.shortcode] + diff >= 0) acc[event.shortcode] += diff;
     return acc;
-  }, {} as Record<string, number>);
+  }, oldLeaderboardObj);
 
   return Object.entries(totals).sort(([, count1], [, count2]) =>
     count2 - count1

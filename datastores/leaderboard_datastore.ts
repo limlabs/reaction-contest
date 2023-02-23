@@ -50,7 +50,31 @@ export const getLastUpdated = async (
     );
   }
 
-  if (response.items.length === 0) return Date.now();
-  console.log(response);
+  if (response.items.length === 0) {
+    console.log("response.items.length === 0");
+    return Date.now();
+  }
+  console.log("response.items.length !!!!= 0", response);
   return response.items[0].last_updated_timestamp;
+};
+
+export const getLeaderboardData = async (
+  client: SlackAPIClient,
+) => {
+  const response = await client.apps.datastore.query({
+    datastore: LeaderboardDatastoreName,
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to get leaderboard from datastore: ${response.error}`,
+    );
+  }
+
+  if (response.items.length === 0) {
+    console.log("response.items.length === 0");
+    return [];
+  }
+
+  return JSON.parse(response.items[0].data);
 };

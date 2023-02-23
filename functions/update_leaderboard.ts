@@ -1,6 +1,7 @@
 import { DefineFunction, SlackFunction } from "deno-slack-sdk/mod.ts";
 import {
   getLastUpdated,
+  getLeaderboardData,
   saveLeaderboard,
 } from "../datastores/leaderboard_datastore.ts";
 import { getReactionsSince } from "../datastores/reaction_datastore.ts";
@@ -25,7 +26,8 @@ export default SlackFunction(
     // const since = 0;
     const events = await getReactionsSince(client, since);
     console.log("events since", events);
-    const leaderboardData = topReactions(events);
+    const oldLeaderboardArr = await getLeaderboardData(client);
+    const leaderboardData = topReactions(events, oldLeaderboardArr);
     const leaderboard = createReactionLeaderboard("top", leaderboardData);
     console.log("LEADERBOARD", leaderboard);
     await saveLeaderboard(client, leaderboard);
