@@ -16,14 +16,11 @@ export const UpdateLeaderboardFunction = DefineFunction({
   source_file: "functions/update_leaderboard.ts",
 });
 
-// TODO:
-// 1. Fetch previous since value
 export default SlackFunction(
   UpdateLeaderboardFunction,
   async ({ client }) => {
     console.log("updating leaderboard");
     const since = await getLastUpdated(client);
-    // const since = 0;
     const events = await getReactionsSince(client, since);
     console.log("events since", events);
     const oldLeaderboardArr = await getLeaderboardData(client);

@@ -49,6 +49,7 @@ export const getReactionsSince = async (
     expression: "#timestamp > :last_updated",
     expression_attributes: { "#timestamp": "timestamp" },
     expression_values: { ":last_updated": since },
+    limit: 1000,
   });
 
   if (!response.ok) {
