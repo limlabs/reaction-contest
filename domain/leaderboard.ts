@@ -35,12 +35,13 @@ export const topReactions = (
     }
 
     const diff = event.action === "added" ? 1 : -1;
-    acc[event.shortcode] += diff;
+
+    if (acc[event.shortcode] + diff >= 0) acc[event.shortcode] += diff;
     return acc;
   }, {} as Record<string, number>);
 
   return Object.entries(totals).sort(([, count1], [, count2]) =>
-    count1 - count2
+    count2 - count1
   ).slice(0, limit).map(([reaction, count]) => ({
     reaction,
     count,
