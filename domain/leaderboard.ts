@@ -22,9 +22,6 @@ export const createReactionLeaderboard = (
   };
 };
 
-// TODO:
-// 1. Fix sorting
-// 2. Prevent negative values from being stored
 export const topReactions = (
   events: ReactionEvent[],
   limit = 10,

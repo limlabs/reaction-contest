@@ -25,6 +25,7 @@ export const saveLeaderboard = async (
     item: {
       ...leaderboard,
       data: JSON.stringify(leaderboard.data),
+      last_updated_timestamp: leaderboard.last_updated,
     },
   });
 
@@ -33,4 +34,23 @@ export const saveLeaderboard = async (
       `failed to get reactions from datastore: ${response.error}`,
     );
   }
+};
+
+export const getLastUpdated = async (
+  client: SlackAPIClient,
+) => {
+  const response = await client.apps.datastore.query({
+    datastore: LeaderboardDatastoreName,
+  });
+
+  console.log("getLastUpdated response.items", response.items);
+  if (!response.ok) {
+    throw new Error(
+      `failed to get leaderboard from datastore: ${response.error}`,
+    );
+  }
+
+  if (response.items.length === 0) return Date.now();
+  console.log(response);
+  return response.items[0].last_updated_timestamp;
 };

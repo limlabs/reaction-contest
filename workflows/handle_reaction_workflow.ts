@@ -1,7 +1,5 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
 import { HandleReactionFunction } from "../functions/handle_reaction.ts";
-import { UpdateLeaderboardFunction } from "../functions/update_leaderboard.ts";
-import UpdateLeaderboardWorkflow from "./update_leaderboard_workflow.ts";
 
 const HandleReactionWorkflow = DefineWorkflow({
   callback_id: "handle_reaction_workflow",
@@ -35,11 +33,6 @@ HandleReactionWorkflow.addStep(
     userId: HandleReactionWorkflow.inputs.userId,
     action: HandleReactionWorkflow.inputs.action,
   },
-);
-
-HandleReactionWorkflow.addStep(
-  UpdateLeaderboardFunction,
-  {},
 );
 
 export default HandleReactionWorkflow;
