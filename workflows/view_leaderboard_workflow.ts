@@ -8,27 +8,25 @@ const ViewLeaderboardWorkflow = DefineWorkflow({
   title: "View leaderboard",
   input_parameters: {
     properties: {
-      userId: {
-        type: Schema.slack.types.user_id,
+      channelId: {
+        type: Schema.slack.types.channel_id,
       },
     },
-    required: ["userId"],
+    required: ["channelId"],
   },
 });
 
-// const topTenEmojisArr =
-ViewLeaderboardWorkflow.addStep(
+const leaderboardMessage = ViewLeaderboardWorkflow.addStep(
   ViewLeaderboardFunction,
-  { userId: ViewLeaderboardWorkflow.inputs.userId },
+  {},
 );
 
-// ViewLeaderboardWorkflow.addStep(
-//   Schema.slack.functions.SendEphemeralMessage,
-//   {
-//     channel_id: "C04NSNR0Q6P",
-//     user_id: ViewLeaderboardWorkflow.inputs.userId,
-//     message: `Top Ten: ${topTenEmojisArr}`,
-//   },
-// );
+ViewLeaderboardWorkflow.addStep(
+  Schema.slack.functions.SendMessage,
+  {
+    channel_id: ViewLeaderboardWorkflow.inputs.channelId,
+    message: leaderboardMessage.outputs.leaderboardMessage,
+  },
+);
 
 export default ViewLeaderboardWorkflow;
