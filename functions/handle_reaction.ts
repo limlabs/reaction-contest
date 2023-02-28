@@ -1,9 +1,6 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
-import {
-  ReactionDatastoreName,
-  ReactionDatastoreSchema,
-} from "../datastores/reaction_datastore.ts";
+import { ReactionDatastoreName } from "../datastores/reaction_datastore.ts";
 import {
   createReactionEvent,
   ReactionEvent,
@@ -56,31 +53,6 @@ export const saveReaction = async (
       `failed to get reactions from datastore: ${response.error}`,
     );
   }
-};
-
-// TODO: Ensure we return as many results as possible (for now)
-// Eventually we will need to handle pagination.
-export const getReactionsSince = async (
-  client: SlackAPIClient,
-  since: number,
-) => {
-  const response = await client.apps.datastore.query<
-    typeof ReactionDatastoreSchema
-  >({
-    datastore: ReactionDatastoreName,
-    expression: "#timestamp > :last_updated",
-    expression_attributes: { "#timestamp": "timestamp" },
-    expression_values: { ":last_updated": since },
-    limit: 1000,
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `failed to get reactions from datastore: ${response.error}`,
-    );
-  }
-
-  return response.items.map((item) => item as ReactionEvent);
 };
 
 export default SlackFunction(

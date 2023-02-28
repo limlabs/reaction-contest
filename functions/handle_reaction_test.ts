@@ -34,3 +34,7 @@ Deno.test("Handle Reaction added works", async () => {
     testUserId,
   );
 });
+
+Deno.test("Handle Reaction removed works", async () => {
+  // TODO: @nathburg
+});
