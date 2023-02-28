@@ -1,5 +1,7 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { GetAllEmojiDataDefinition } from "../functions/get_all_emoji_data.ts";
+import { ViewLeaderboardFunction } from "../functions/view_leaderboard.ts";
+
+// TODO: Modify workflow to support link trigger
 
 const ViewLeaderboardWorkflow = DefineWorkflow({
   callback_id: "view_leaderboard_workflow",
@@ -16,7 +18,7 @@ const ViewLeaderboardWorkflow = DefineWorkflow({
 
 // const topTenEmojisArr =
 ViewLeaderboardWorkflow.addStep(
-  GetAllEmojiDataDefinition,
+  ViewLeaderboardFunction,
   { userId: ViewLeaderboardWorkflow.inputs.userId },
 );
 
