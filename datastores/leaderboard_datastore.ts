@@ -15,7 +15,6 @@ export const LeaderboardDatastore = DefineDatastore({
   },
 });
 
-// TODO: save new updated time
 export const saveLeaderboard = async (
   client: SlackAPIClient,
   leaderboard: ReactionLeaderboard,
@@ -25,6 +24,7 @@ export const saveLeaderboard = async (
     item: {
       ...leaderboard,
       data: JSON.stringify(leaderboard.data),
+      last_updated_timestamp: leaderboard.last_updated,
     },
   });
 
@@ -33,4 +33,52 @@ export const saveLeaderboard = async (
       `failed to get reactions from datastore: ${response.error}`,
     );
   }
+};
+
+export const getLastUpdated = async (
+  client: SlackAPIClient,
+) => {
+  const response = await client.apps.datastore.query({
+    datastore: LeaderboardDatastoreName,
+  });
+
+  console.log(
+    "getLastUpdated response",
+    response,
+    "getLastUpdated response.items",
+    response.items,
+  );
+  if (!response.ok) {
+    throw new Error(
+      `failed to get leaderboard from datastore: ${response.error}`,
+    );
+  }
+
+  if (response.items.length === 0) {
+    console.log("response.items.length === 0");
+    return Date.now();
+  }
+  console.log("response.items.length !!!!= 0", response);
+  return response.items[0].last_updated_timestamp;
+};
+
+export const getLeaderboardData = async (
+  client: SlackAPIClient,
+) => {
+  const response = await client.apps.datastore.query({
+    datastore: LeaderboardDatastoreName,
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to get leaderboard from datastore: ${response.error}`,
+    );
+  }
+
+  if (response.items.length === 0) {
+    console.log("response.items.length === 0");
+    return [];
+  }
+
+  return JSON.parse(response.items[0].data);
 };
