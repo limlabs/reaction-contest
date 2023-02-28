@@ -4,13 +4,23 @@ import ViewLeaderboardWorkflow from "../workflows/view_leaderboard_workflow.ts";
 const viewLeaderboardTrigger: Trigger<
   typeof ViewLeaderboardWorkflow.definition
 > = {
-  type: "shortcut",
-  name: "View Leaderboard link trigger",
-  description: "link sends message to channel with current leaderboard",
+  type: "event",
+  name: "View Leaderboard trigger",
+  description: "/emoji-contest brings up current leaderboard",
   workflow: "#/workflows/view_leaderboard_workflow",
+  event: {
+    event_type: "slack#/events/message_posted",
+    channel_ids: ["C04NSNR0Q6P"],
+    filter: {
+      version: 1,
+      root: {
+        statement: "{{data.text}} == /emoji-contest",
+      },
+    },
+  },
   inputs: {
-    channelId: {
-      value: "{{data.channel_id}}",
+    userId: {
+      value: "{{data.user_id}}",
     },
   },
 };
