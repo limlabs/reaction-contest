@@ -1,6 +1,7 @@
 {
   "version": "2",
   "remote": {
+    "https://crux.land/api/get/2KNRVU.ts": "6a77d55844aba78d01520c5ff0b2f0af7f24cc1716a0de8b3bb6bd918c47b5ba",
     "https://deno.land/std@0.134.0/_deno_unstable.ts": "23a1a36928f1b6d3b0170aaa67de09af12aa998525f608ff7331b9fb364cbde6",
     "https://deno.land/std@0.134.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.134.0/_util/os.ts": "49b92edea1e82ba295ec946de8ffd956ed123e2948d9bd1d3e901b04e4307617",
@@ -33,6 +34,11 @@
     "https://deno.land/std@0.138.0/flags/mod.ts": "019df8a63ed24df2d10be22e8983aa9253623e871228a2f8f328ff2d0404f7ef",
     "https://deno.land/std@0.149.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.149.0/encoding/jsonc.ts": "11ad83eaae80e94ecd26190af950e90ca147b9f39838a059da804b591a803b11",
+    "https://deno.land/std@0.178.0/fmt/colors.ts": "938c5d44d889fb82eff6c358bea8baa7e85950a16c9f6dae3ec3a7a729164471",
+    "https://deno.land/std@0.178.0/testing/_diff.ts": "1a3c044aedf77647d6cac86b798c6417603361b66b54c53331b312caeb447aea",
+    "https://deno.land/std@0.178.0/testing/_format.ts": "a69126e8a469009adf4cf2a50af889aca364c349797e63174884a52ff75cf4c7",
+    "https://deno.land/std@0.178.0/testing/asserts.ts": "984ab0bfb3faeed92ffaa3a6b06536c66811185328c5dd146257c702c41b01ab",
+    "https://deno.land/std@0.178.0/testing/mock.ts": "220ed9b8151cb2cac141043d4cfea7c47673fab5d18d1c1f0943297c8afb5d13",
     "https://deno.land/std@0.99.0/_util/assert.ts": "2f868145a042a11d5ad0a3c748dcf580add8a0dbc0e876eaa0026303a5488f58",
     "https://deno.land/std@0.99.0/bytes/mod.ts": "1ae1ccfe98c4b979f12b015982c7444f81fcb921bea7aa215bf37d84f46e1e13",
     "https://deno.land/std@0.99.0/flags/mod.ts": "0994240ad009980e46bc3bb1314e9469c7241617e4345b27afc82097fdbef841",
@@ -458,6 +464,7 @@
     "https://deno.land/x/deno_slack_sdk@1.6.0/types/types.ts": "8f402db92718cb06168f83a78677416fe44fde408a657da5c89451d4eb09f748",
     "https://deno.land/x/deno_slack_sdk@1.6.0/workflows/mod.ts": "96d3a5f441bab0896af2e5324bf0f84f551325aebaba22b2a4faa7de757023d9",
     "https://deno.land/x/deno_slack_sdk@1.6.0/workflows/types.ts": "e7ef57477d2b1b0221f5ca3b952af15ca7f0c873579d7e404ba53ade0697cd96",
-    "https://deno.land/x/deno_slack_sdk@1.6.0/workflows/workflow-step.ts": "130d956c3572a90fccca9d04e5e7fa1031fcd10b1fbc499d692be258feabe1ca"
+    "https://deno.land/x/deno_slack_sdk@1.6.0/workflows/workflow-step.ts": "130d956c3572a90fccca9d04e5e7fa1031fcd10b1fbc499d692be258feabe1ca",
+    "https://deno.land/x/mock_fetch@0.3.0/mod.ts": "7e7806c65ab17b2b684c334c4e565812bdaf504a3e9c938d2bb52bb67428bc89"
   }
 }
