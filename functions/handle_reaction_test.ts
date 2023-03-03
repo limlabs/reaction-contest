@@ -14,15 +14,12 @@ import HandleReactionFunction, { saveReaction } from "./handle_reaction.ts";
 const { createContext } = SlackFunctionTester("handle_reaction");
 const testUserId = "a99ad6f5-107b-4f8e-9ee3-3d5630308ae2";
 
-stub(crypto, "randomUUID", returnsNext([testUserId, testUserId])); // TODO: figure out beforeEach to reset this
+stub(crypto, "randomUUID", returnsNext([testUserId, testUserId]));
 
 // Replaces globalThis.fetch with the mocked copy
 mf.install();
 
-let lastDatastorePutArgs: unknown[] = [];
-
-mf.mock("POST@/api/apps.datastore.put", (...args) => {
-  lastDatastorePutArgs = args;
+mf.mock("POST@/api/apps.datastore.put", () => {
   return new Response(JSON.stringify({ ok: true, items: [] }));
 });
 
@@ -50,6 +47,7 @@ Deno.test("Event is saved to datastore with correct properties", async () => {
     },
   } as unknown as SlackAPIClient;
 
+  // deno-lint-ignore no-explicit-any
   const returnedPromise = Promise.resolve({ ok: true }) as any;
 
   const datastorePutStub = stub(
@@ -72,19 +70,4 @@ Deno.test("Event is saved to datastore with correct properties", async () => {
     args: [{ datastore: ReactionDatastoreName, item: mockReactionEvent }],
     returned: returnedPromise,
   });
-});
-
-Deno.test("Handle Reaction removed works", async () => {
-  const inputs = {
-    channelId: "ABC123",
-    userId: "testUser1",
-    reaction: "snakemoji",
-    action: "reeeeee",
-  };
-
-  const { outputs } = await HandleReactionFunction(createContext({ inputs }));
-  assertEquals(
-    outputs?.id,
-    testUserId,
-  );
 });

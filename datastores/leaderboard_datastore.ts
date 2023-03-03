@@ -42,12 +42,6 @@ export const getLastUpdated = async (
     datastore: LeaderboardDatastoreName,
   });
 
-  console.log(
-    "getLastUpdated response",
-    response,
-    "getLastUpdated response.items",
-    response.items,
-  );
   if (!response.ok) {
     throw new Error(
       `failed to get leaderboard from datastore: ${response.error}`,
@@ -55,10 +49,8 @@ export const getLastUpdated = async (
   }
 
   if (response.items.length === 0) {
-    console.log("response.items.length === 0");
     return Date.now();
   }
-  console.log("response.items.length !!!!= 0", response);
   return response.items[0].last_updated_timestamp;
 };
 
@@ -76,9 +68,7 @@ export const getLeaderboardData = async (
   }
 
   if (response.items.length === 0) {
-    console.log("response.items.length === 0");
     return [];
   }
-  console.log("leaderboard_datastore REEEE", response.items[0].data);
   return JSON.parse(response.items[0].data);
 };
