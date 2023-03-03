@@ -1,15 +1,6 @@
-import {
-  assertSpyCall,
-  returnsNext,
-  stub,
-} from "https://deno.land/std@0.178.0/testing/mock.ts";
-
 import * as mf from "mock-fetch/mod.ts";
 import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
-import HandleReactionFunction, { saveReaction } from "./handle_reaction.ts";
-import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.7.0/types.ts";
-import { ReactionDatastoreName } from "../datastores/reaction_datastore.ts";
 import ViewLeaderboardFunction from "./view_leaderboard.ts";
 
 mf.install();

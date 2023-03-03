@@ -46,6 +46,7 @@ Deno.test("Event is saved to datastore with correct properties", async () => {
     },
   } as unknown as SlackAPIClient;
 
+  // deno-lint-ignore no-explicit-any
   const returnedPromise = Promise.resolve({ ok: true }) as any;
 
   const datastorePutStub = stub(
