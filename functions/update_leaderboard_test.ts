@@ -49,27 +49,6 @@ mf.mock("POST@/api/apps.datastore.put", () => {
   return new Response(JSON.stringify({ ok: true, items: [] }));
 });
 
-mf.mock("POST@/api/apps.datastore.query", async (args) => {
-  const body = await args.formData();
-  if (body.get("datastore") === "emoji-contest-leaderboard") {
-    return new Response(
-      JSON.stringify({
-        ok: true,
-        items: [{
-          last_updated_timestamp: 1000,
-          data: JSON.stringify(mockLeaderboardData),
-        }],
-      }),
-    );
-  }
-  if (body.get("datastore") === "emoji-contest-reactions") {
-    return new Response(JSON.stringify({ ok: true, items: mockEventsArray }));
-  } else {
-    console.log("Unrecognized datastore query");
-    return new Response(JSON.stringify({ ok: false }));
-  }
-});
-
 Deno.test("UpdateLeaderboard works when there is an old leaderboard to update", async () => {
   mf.mock("POST@/api/apps.datastore.query", async (args) => {
     const body = await args.formData();
