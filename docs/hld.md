@@ -48,11 +48,27 @@ Slack also provides a [datastore](https://api.slack.com/future/datastores) featu
 
 This repo contains a generated "hello world" example, which can be modified or overwritten completely if needed. It is mainly here as a convenience to verify the setup works.
 
+## Datastores
+
+-   `reaction_datastore`
+    Info about emoji reaction events including:
+
+    -   Emoji used
+    -   Whether emoji was added or removed
+    -   Timestamp
+
+-   `leaderboard_datastore`
+    -   Array of most used emojis, with count
+    -   Timestamp of last update
+
 ## Functions
 
--   `handle_reaction_added`
-    -   Triggers: `reaction_added`
-    -   Action: update the reaction count for the incoming reaction
--   `handle_leaderboard_requested`
-    -   Triggers: link trigger for command `/emoji-contest`
-    -   Action: post a message into the channel with the current leaderboard of reactions, ranked by highest count first. Can keep this to top 10 for simplification.
+-   `handle_reaction`
+    -   Triggers: `reaction_added`, `reaction_removed`
+    -   Action: adds reaction event data to `reaction_datastore`
+-   `update_leaderboard`
+    -   Triggers: hourly scheduled update
+    -   Action: queries `reaction_datastore` for all events since last update, then updates `leaderboard_datastore` with those events
+-   `view_leaderboard`
+    -   Triggers: link trigger
+    -   Action: reads `leaderboard_datastore` and sends a message with leaderboard data to the channel that called the link trigger
