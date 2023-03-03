@@ -7,7 +7,7 @@ import {
   ReactionDatastoreSchema,
 } from "../datastores/reaction_datastore.ts";
 
-export const HandleReactionFunction = DefineFunction({
+export const HandleReactionFunctionDefinition = DefineFunction({
   callback_id: "handle_reaction",
   title: "Add emoji to datastore",
   source_file: "functions/handle_reaction.ts",
@@ -39,8 +39,8 @@ export const HandleReactionFunction = DefineFunction({
   },
 });
 
-export default SlackFunction(
-  HandleReactionFunction,
+const HandleReactionFunction = SlackFunction(
+  HandleReactionFunctionDefinition,
   async ({ inputs, client }) => {
     const event = createReactionEvent({
       channelId: inputs.channelId,
@@ -95,3 +95,5 @@ export const getReactionsSince = async (
 
   return response.items.map((item) => item as ReactionEvent);
 };
+
+export default HandleReactionFunction;
