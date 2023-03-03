@@ -79,6 +79,6 @@ export const getLeaderboardData = async (
     console.log("response.items.length === 0");
     return [];
   }
-
+  console.log("leaderboard_datastore REEEE", response.items[0].data);
   return JSON.parse(response.items[0].data);
 };

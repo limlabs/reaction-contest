@@ -22,7 +22,6 @@ export const createReactionLeaderboard = (
   };
 };
 
-// TODO: test this
 export const topReactions = (
   events: ReactionEvent[],
   oldLeaderboardArr: ReactionLeaderboardEntry[],

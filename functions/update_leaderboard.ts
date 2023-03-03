@@ -8,14 +8,14 @@ import {
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.7.0/types.ts";
 import { LeaderboardDatastoreName } from "../datastores/leaderboard_datastore.ts";
 
-export const UpdateLeaderboardFunction = DefineFunction({
+export const UpdateLeaderboardFunctionDefinition = DefineFunction({
   callback_id: "update_leaderboard",
   title: "Updates a leaderboard object",
   source_file: "functions/update_leaderboard.ts",
 });
 
-export default SlackFunction(
-  UpdateLeaderboardFunction,
+const UpdateLeaderboardFunction = SlackFunction(
+  UpdateLeaderboardFunctionDefinition,
   async ({ client }) => {
     console.log("updating leaderboard");
     const since = await getLastUpdated(client);
@@ -60,12 +60,6 @@ export const getLastUpdated = async (
     datastore: LeaderboardDatastoreName,
   });
 
-  console.log(
-    "getLastUpdated response",
-    response,
-    "getLastUpdated response.items",
-    response.items,
-  );
   if (!response.ok) {
     throw new Error(
       `failed to get leaderboard from datastore: ${response.error}`,
@@ -95,6 +89,7 @@ export const getLeaderboardData = async (
     console.log("response.items.length === 0");
     return [];
   }
-
   return JSON.parse(response.items[0].data);
 };
+
+export default UpdateLeaderboardFunction;

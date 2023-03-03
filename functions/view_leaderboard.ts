@@ -21,7 +21,6 @@ export default SlackFunction(
   ViewLeaderboardFunction,
   async ({ client }) => {
     const leaderboardData = await getLeaderboardData(client);
-    console.log("leaderboardData", leaderboardData);
     if (leaderboardData.length === 0) {
       return {
         outputs: { leaderboardMessage: "Add some emojis to your channel!" },
@@ -34,7 +33,6 @@ export default SlackFunction(
         item.count === 1 ? "1 time" : `${item.count} times`
       }\n`;
     }
-    console.log("testinggggg leaderboardMessage", leaderboardMessage);
     return { outputs: { leaderboardMessage } };
   },
 );
