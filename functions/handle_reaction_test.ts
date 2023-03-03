@@ -14,15 +14,11 @@ import HandleReactionFunction, { saveReaction } from "./handle_reaction.ts";
 const { createContext } = SlackFunctionTester("handle_reaction");
 const testUserId = "a99ad6f5-107b-4f8e-9ee3-3d5630308ae2";
 
-stub(crypto, "randomUUID", returnsNext([testUserId, testUserId])); // TODO: figure out beforeEach to reset this
+stub(crypto, "randomUUID", () => testUserId);
 
-// Replaces globalThis.fetch with the mocked copy
 mf.install();
 
-let lastDatastorePutArgs: unknown[] = [];
-
-mf.mock("POST@/api/apps.datastore.put", (...args) => {
-  lastDatastorePutArgs = args;
+mf.mock("POST@/api/apps.datastore.put", () => {
   return new Response(JSON.stringify({ ok: true, items: [] }));
 });
 
