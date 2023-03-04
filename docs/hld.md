@@ -1,29 +1,34 @@
-# Emoji Contest - High Level Design
+# Emoji Contest Slack App
 
-## Background
+## Summary
 
--   We internally hold an emoji of the week contest every week, based on whatever we think is best
--   We also manually update a leaderboard w/ upload count
--   We would like to move this into a bot, which keeps track of this stuff automatically, and display a basic leaderboard
+This app records which emoji reactions are used in your Slack workspace, and
+generates a leaderboard of the most-used reactions. It uses
+[Slack's new modular API](https://api.slack.com/future).
 
-## Requirements
+### Slack Next Gen Platform Overview
 
--   Listen to a single channel for an event that triggers when a reaction is added to a post
--   When the app is installed in the workspace, running the command `/emoji-contest` displays a leaderboard of the top used emojis in the channel
+Slack's new platform provides a serverless environment to run logic in
+_functions_ from _triggers_ originating in a Slack workspace.
 
-## Assumptions
+Triggers can be manual, such as a
+[link trigger](https://api.slack.com/future/triggers/link). They also can be
+passive, and registered when certain things happen in the channel. Those things
+are called [events](https://api.slack.com/future/triggers/event) using Slack's
+platform terminology.
 
--   You can format the output however you want for now (list, table, etc)
--   The next-gen Slack platform should be used [here](https://api.slack.com/future)
--   Store any data in a Slack [datastore](https://api.slack.com/future/datastores)
--   Only a single channel needs to be supported for now
--   The NW Computing Sandbox Slack should work for you develop the app
-    -   You should not need to pay for anything. If you do, let me know and I will prioritize unblocking you!
--   If this ends up working, we will probably want to keep adding to it, ideally with your help!
+Slack also provides a [datastore](https://api.slack.com/future/datastores)
+feature that can be used for storing simple information.
 
-## Solution Overview
+## App Overview
 
-This is a simplified version of what you'd see on most of our projects. It contains some of the logic and technical details to help guide a successful implementation.
+The `reaction_added` and `reaction_removed` events in Slack send data to the
+`reaction_datastore` recording the event. Another datastore,
+`leaderboard_datastore`, is updated at hourly intervals with the latest reaction
+events since the last update. (Hourly intervals are the smallest increment the
+API supports right now, though ideally it would be more frequent.) When users
+call the `view_leaderboard` link trigger in a public channel, a message is
+posted in the channel with the current leaderboard.
 
 ```mermaid
 flowchart LR
@@ -31,44 +36,49 @@ flowchart LR
   slack -- "hourly update" --> update_leaderboard
   slack -- "link trigger" --> view_leaderboard
   handle_reaction -- "add to datastore" --> reaction_datastore
-  update_leaderboard -- "get events since last update" --> reaction_datastore
-  reaction_datastore -- "send response" --> update_leaderboard
-  update_leaderboard -- "update leaderboard w/ new events" --> leaderboard_datastore
+  update_leaderboard -- "update leaderboard w/ new reactions since last update" --> leaderboard_datastore
   view_leaderboard -- "read leaderboard" --> leaderboard_datastore
   view_leaderboard -- "send response" --> slack
 ```
 
-### Slack Next Gen Platform Overview
-
-Slack's new platform provides a serverless environment to run logic in _functions_ from _triggers_ originating in a Slack workspace.
-
-Triggers can be manual, like invoking a command (`/giphy` for a concrete example). They also can be passive, and registered when certain things happen in the channel. Those things are called [events](https://api.slack.com/future/triggers/event) using Slacks platform terminology.
-
-Slack also provides a [datastore](https://api.slack.com/future/datastores) feature that can be used for storing simple information. We would like to use this to store our emoji counts.
-
-This repo contains a generated "hello world" example, which can be modified or overwritten completely if needed. It is mainly here as a convenience to verify the setup works.
-
 ## Datastores
 
--   `reaction_datastore`
-    Info about emoji reaction events including:
+- `reaction_datastore` Info about emoji reaction events including:
 
-    -   Emoji used
-    -   Whether emoji was added or removed
-    -   Timestamp
+  - Emoji used
+  - Whether emoji was added or removed
+  - Timestamp
 
--   `leaderboard_datastore`
-    -   Array of most used emojis, with count
-    -   Timestamp of last update
+- `leaderboard_datastore`
+  - Array of most used emojis, with count
+  - Timestamp of last update
 
 ## Functions
 
--   `handle_reaction`
-    -   Triggers: `reaction_added`, `reaction_removed`
-    -   Action: adds reaction event data to `reaction_datastore`
--   `update_leaderboard`
-    -   Triggers: hourly scheduled update
-    -   Action: queries `reaction_datastore` for all events since last update, then updates `leaderboard_datastore` with those events
--   `view_leaderboard`
-    -   Triggers: link trigger
-    -   Action: reads `leaderboard_datastore` and sends a message with leaderboard data to the channel that called the link trigger
+- `handle_reaction`
+
+  - Triggers: `reaction_added`, `reaction_removed`
+  - Action: adds reaction event data to `reaction_datastore`
+
+- `view_leaderboard`
+
+  - Triggers: link trigger
+  - Action: reads `leaderboard_datastore` and sends a message with leaderboard
+    data to the channel that called the link trigger
+
+- `update_leaderboard`
+
+  - Triggers: hourly scheduled update
+  - Action: queries `reaction_datastore` for all events since last update, then
+    updates `leaderboard_datastore` with these events
+
+  ```mermaid
+  sequenceDiagram
+  update_leaderboard->>leaderboard_datastore: getLastUpdated
+  leaderboard_datastore-->>update_leaderboard: last_updated_timestamp
+  update_leaderboard->>reaction_datastore: getReactionsSince
+  reaction_datastore-->>update_leaderboard: latest reactions
+  update_leaderboard->>leaderboard_datastore: getLeaderboardData
+  leaderboard_datastore-->>update_leaderboard: leaderboard data
+  update_leaderboard->>leaderboard_datastore: saveLeaderboard
+  ```

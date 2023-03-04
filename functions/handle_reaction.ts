@@ -1,8 +1,10 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import { saveReaction } from "../datastores/reaction_datastore.ts";
 import { createReactionEvent, ReactionEventType } from "../domain/reaction.ts";
+import { ReactionEvent } from "../domain/reaction.ts";
+import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
+import { ReactionDatastoreName } from "../datastores/reaction_datastore.ts";
 
-export const HandleReactionFunction = DefineFunction({
+export const HandleReactionFunctionDefinition = DefineFunction({
   callback_id: "handle_reaction",
   title: "Add emoji to datastore",
   source_file: "functions/handle_reaction.ts",
@@ -34,8 +36,8 @@ export const HandleReactionFunction = DefineFunction({
   },
 });
 
-export default SlackFunction(
-  HandleReactionFunction,
+const HandleReactionFunction = SlackFunction(
+  HandleReactionFunctionDefinition,
   async ({ inputs, client }) => {
     const event = createReactionEvent({
       channelId: inputs.channelId,
@@ -51,3 +53,21 @@ export default SlackFunction(
     return { outputs: { id: event.id } };
   },
 );
+
+export const saveReaction = async (
+  client: SlackAPIClient,
+  reaction: ReactionEvent,
+) => {
+  const response = await client.apps.datastore.put({
+    datastore: ReactionDatastoreName,
+    item: reaction,
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to get reactions from datastore: ${response.error}`,
+    );
+  }
+};
+
+export default HandleReactionFunction;
