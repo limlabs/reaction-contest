@@ -70,5 +70,6 @@ export const getLeaderboardData = async (
   if (response.items.length === 0) {
     return [];
   }
+
   return JSON.parse(response.items[0].data);
 };
