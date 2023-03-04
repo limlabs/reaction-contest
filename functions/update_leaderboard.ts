@@ -1,5 +1,4 @@
 import { DefineFunction, SlackFunction } from "deno-slack-sdk/mod.ts";
-import { getReactionsSince } from "../functions/handle_reaction.ts";
 import {
   createReactionLeaderboard,
   ReactionLeaderboard,
@@ -7,6 +6,11 @@ import {
 } from "../domain/leaderboard.ts";
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.7.0/types.ts";
 import { LeaderboardDatastoreName } from "../datastores/leaderboard_datastore.ts";
+import {
+  ReactionDatastoreName,
+  ReactionDatastoreSchema,
+} from "../datastores/reaction_datastore.ts";
+import { ReactionEvent } from "../domain/reaction.ts";
 
 export const UpdateLeaderboardFunctionDefinition = DefineFunction({
   callback_id: "update_leaderboard",
@@ -86,10 +90,32 @@ export const getLeaderboardData = async (
   }
 
   if (response.items.length === 0) {
-    console.log("response.items.length === 0");
     return [];
   }
   return JSON.parse(response.items[0].data);
+};
+
+export const getReactionsSince = async (
+  client: SlackAPIClient,
+  since: number,
+) => {
+  const response = await client.apps.datastore.query<
+    typeof ReactionDatastoreSchema
+  >({
+    datastore: ReactionDatastoreName,
+    expression: "#timestamp > :last_updated",
+    expression_attributes: { "#timestamp": "timestamp" },
+    expression_values: { ":last_updated": since },
+    limit: 1000,
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to get reactions from datastore: ${response.error}`,
+    );
+  }
+
+  return response.items.map((item) => item as ReactionEvent);
 };
 
 export default UpdateLeaderboardFunction;
