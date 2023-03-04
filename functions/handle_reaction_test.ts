@@ -14,7 +14,6 @@ import HandleReactionFunction, { saveReaction } from "./handle_reaction.ts";
 const { createContext } = SlackFunctionTester("handle_reaction");
 const testUserId = "a99ad6f5-107b-4f8e-9ee3-3d5630308ae2";
 
-
 stub(crypto, "randomUUID", () => testUserId);
 
 mf.install();
@@ -71,4 +70,3 @@ Deno.test("Event is saved to datastore with correct properties", async () => {
     returned: returnedPromise,
   });
 });
-

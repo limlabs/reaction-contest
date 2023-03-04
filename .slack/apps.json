@@ -1,11 +1,11 @@
 {
-  "apps": {
-    "northwestcomp-mxm9450": {
-      "name": "northwestcomp-mxm9450",
-      "app_id": "A04R4FPHXGU",
-      "team_id": "T04NSNL6EBD",
-      "IsDev": false
-    }
-  },
-  "default": "northwestcomp-mxm9450"
+	"apps": {
+		"northwestcomp-mxm9450": {
+			"name": "northwestcomp-mxm9450",
+			"app_id": "A04R4FPHXGU",
+			"team_id": "T04NSNL6EBD",
+			"IsDev": false
+		}
+	},
+	"default": "northwestcomp-mxm9450"
 }

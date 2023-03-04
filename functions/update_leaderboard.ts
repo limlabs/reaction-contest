@@ -12,7 +12,6 @@ import {
 } from "../datastores/reaction_datastore.ts";
 import { ReactionEvent } from "../domain/reaction.ts";
 
-
 export const UpdateLeaderboardFunctionDefinition = DefineFunction({
   callback_id: "update_leaderboard",
   title: "Updates a leaderboard object",
