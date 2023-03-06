@@ -1,5 +1,5 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import { getLeaderboardData } from "./update_leaderboard.ts";
+import { getLeaderboardInfo } from "./update_leaderboard.ts";
 
 export const ViewLeaderboardFunction = DefineFunction({
   callback_id: "view_leaderboard",
@@ -20,7 +20,7 @@ export const ViewLeaderboardFunction = DefineFunction({
 export default SlackFunction(
   ViewLeaderboardFunction,
   async ({ client }) => {
-    const leaderboardData = await getLeaderboardData(client);
+    const { data: leaderboardData } = await getLeaderboardInfo(client);
     if (leaderboardData.length === 0) {
       return {
         outputs: { leaderboardMessage: "Add some emojis to your channel!" },
