@@ -1,5 +1,5 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { HandleReactionFunction } from "../functions/handle_reaction.ts";
+import { HandleReactionFunctionDefinition } from "../functions/handle_reaction.ts";
 
 const HandleReactionWorkflow = DefineWorkflow({
   callback_id: "handle_reaction_workflow",
@@ -26,7 +26,7 @@ const HandleReactionWorkflow = DefineWorkflow({
 });
 
 HandleReactionWorkflow.addStep(
-  HandleReactionFunction,
+  HandleReactionFunctionDefinition,
   {
     reaction: HandleReactionWorkflow.inputs.reaction,
     channelId: HandleReactionWorkflow.inputs.channelId,
