@@ -56,25 +56,6 @@ export const saveLeaderboard = async (
   }
 };
 
-// export const getLastUpdated = async (
-//   client: SlackAPIClient,
-// ) => {
-//   const response = await client.apps.datastore.query({
-//     datastore: LeaderboardDatastoreName,
-//   });
-
-//   if (!response.ok) {
-//     throw new Error(
-//       `failed to get leaderboard from datastore: ${response.error}`,
-//     );
-//   }
-
-//   if (response.items.length === 0) {
-//     return Date.now();
-//   }
-//   return response.items[0].last_updated_timestamp;
-// };
-
 export const getLeaderboardInfo = async (
   client: SlackAPIClient,
 ) => {
@@ -99,11 +80,8 @@ export const getLeaderboardInfo = async (
   return {
     ...response.items[0],
     data: JSON.parse(response.items[0].data),
+    // deno-lint-ignore no-explicit-any
   } as any;
-  // {
-  //   data: { reaction: string; count: number }[];
-  //   last_updated_timestamp: number;
-  // };
 };
 
 export const getReactionsSince = async (
