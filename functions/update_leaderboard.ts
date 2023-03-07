@@ -22,11 +22,10 @@ const UpdateLeaderboardFunction = SlackFunction(
   UpdateLeaderboardFunctionDefinition,
   async ({ client }) => {
     console.log("updating leaderboard");
-    const since = await getLastUpdated(client);
-    const events = await getReactionsSince(client, since);
+    const { last_updated_timestamp, data } = await getLeaderboardInfo(client);
+    const events = await getReactionsSince(client, last_updated_timestamp);
     console.log("events since", events);
-    const oldLeaderboardArr = await getLeaderboardData(client);
-    const leaderboardData = topReactions(events, oldLeaderboardArr);
+    const leaderboardData = topReactions(events, data);
     const leaderboard = createReactionLeaderboard("top", leaderboardData);
     console.log("LEADERBOARD", leaderboard);
     await saveLeaderboard(client, leaderboard);
@@ -57,7 +56,7 @@ export const saveLeaderboard = async (
   }
 };
 
-export const getLastUpdated = async (
+export const getLeaderboardInfo = async (
   client: SlackAPIClient,
 ) => {
   const response = await client.apps.datastore.query({
@@ -71,28 +70,18 @@ export const getLastUpdated = async (
   }
 
   if (response.items.length === 0) {
-    return Date.now();
+    console.log("response.items.length === 0");
+    return {
+      data: [],
+      last_updated_timestamp: Date.now(),
+    };
   }
-  return response.items[0].last_updated_timestamp;
-};
-
-export const getLeaderboardData = async (
-  client: SlackAPIClient,
-) => {
-  const response = await client.apps.datastore.query({
-    datastore: LeaderboardDatastoreName,
-  });
-
-  if (!response.ok) {
-    throw new Error(
-      `failed to get leaderboard from datastore: ${response.error}`,
-    );
-  }
-
-  if (response.items.length === 0) {
-    return [];
-  }
-  return JSON.parse(response.items[0].data);
+  console.log("response.items[0]", response.items[0]);
+  return {
+    ...response.items[0],
+    data: JSON.parse(response.items[0].data),
+    // deno-lint-ignore no-explicit-any
+  } as any;
 };
 
 export const getReactionsSince = async (

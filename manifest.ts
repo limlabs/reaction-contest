@@ -36,6 +36,3 @@ export default Manifest({
     "mpim:read",
   ],
 });
-
-// {"datastore": "emoji_datastore", "item": {"emoji": "smiley", "quantity": 1}}
-// {"item": {"emoji": "smiley", "quantity": 1}, "datastore": "emoji_datastore"}
