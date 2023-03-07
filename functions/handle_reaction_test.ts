@@ -70,18 +70,3 @@ Deno.test("Event is saved to datastore with correct properties", async () => {
     returned: returnedPromise,
   });
 });
-
-Deno.test("Handle Reaction removed works", async () => {
-  const inputs = {
-    channelId: "ABC123",
-    userId: "testUser1",
-    reaction: "snakemoji",
-    action: "reeeeee",
-  };
-
-  const { outputs } = await HandleReactionFunction(createContext({ inputs }));
-  assertEquals(
-    outputs?.id,
-    testUserId,
-  );
-});

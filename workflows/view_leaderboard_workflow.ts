@@ -1,5 +1,7 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { ViewLeaderboardFunction } from "../functions/view_leaderboard.ts";
+import {
+  ViewLeaderboardFunctionDefinition,
+} from "../functions/view_leaderboard.ts";
 
 // TODO: Modify workflow to support link trigger
 
@@ -17,7 +19,7 @@ const ViewLeaderboardWorkflow = DefineWorkflow({
 });
 
 const leaderboardMessage = ViewLeaderboardWorkflow.addStep(
-  ViewLeaderboardFunction,
+  ViewLeaderboardFunctionDefinition,
   {},
 );
 
