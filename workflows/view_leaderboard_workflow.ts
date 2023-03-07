@@ -1,4 +1,5 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
+import { UpdateLeaderboardFunctionDefinition } from "../functions/update_leaderboard.ts";
 import {
   ViewLeaderboardFunctionDefinition,
 } from "../functions/view_leaderboard.ts";
@@ -17,6 +18,11 @@ const ViewLeaderboardWorkflow = DefineWorkflow({
     required: ["channelId"],
   },
 });
+
+ViewLeaderboardWorkflow.addStep(
+  UpdateLeaderboardFunctionDefinition,
+  {},
+);
 
 const leaderboardMessage = ViewLeaderboardWorkflow.addStep(
   ViewLeaderboardFunctionDefinition,
