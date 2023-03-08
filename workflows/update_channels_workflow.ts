@@ -1,4 +1,5 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
+import { GetTriggerDataFunctionDefinition } from "../datastores/trigger_datastore.ts";
 
 const UpdateChannelsWorkflow = DefineWorkflow({
   callback_id: "update_channels_workflow",
@@ -12,6 +13,13 @@ const UpdateChannelsWorkflow = DefineWorkflow({
     required: ["interactivity"],
   },
 });
+
+// const triggerData = UpdateChannelsWorkflow.addStep(
+//   GetTriggerDataFunctionDefinition,
+//   {},
+// );
+
+// const channelIdString = triggerData.outputs.data.channels;
 
 const inputForm = UpdateChannelsWorkflow.addStep(
   Schema.slack.functions.OpenForm,
@@ -27,6 +35,9 @@ const inputForm = UpdateChannelsWorkflow.addStep(
           name: "channels",
           title: "Channels",
           type: Schema.types.string,
+          default:
+            // channelIdString +
+            "hello world",
         },
       ],
       required: ["channels"],
