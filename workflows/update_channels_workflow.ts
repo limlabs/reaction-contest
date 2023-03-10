@@ -1,5 +1,6 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
 import { GetTriggerDataFunctionDefinition } from "../functions/get_trigger_data.ts";
+import { UpdateChannelsFunctionDefinition } from "../functions/update_channels.ts";
 
 const UpdateChannelsWorkflow = DefineWorkflow({
   callback_id: "update_channels_workflow",
@@ -46,16 +47,8 @@ const inputForm = UpdateChannelsWorkflow.addStep(
   },
 );
 
-if (inputForm.outputs.fields.channels === "hello") {
-  UpdateChannelsWorkflow.addStep(Schema.slack.functions.SendMessage, {
-    channel_id: UpdateChannelsWorkflow.inputs.channel,
-    message: "U typed hiiiiii",
-  });
-} else {
-  UpdateChannelsWorkflow.addStep(Schema.slack.functions.SendMessage, {
-    channel_id: UpdateChannelsWorkflow.inputs.channel,
-    message: `U typed ${inputForm.outputs.fields.channels}!`,
-  });
-}
+UpdateChannelsWorkflow.addStep(UpdateChannelsFunctionDefinition, {
+  newChannels: inputForm.outputs.fields.channels,
+});
 
 export default UpdateChannelsWorkflow;

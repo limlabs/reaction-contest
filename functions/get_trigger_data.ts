@@ -41,6 +41,8 @@ export const GetTriggerDataFunctionDefinition = DefineFunction({
       interactivity: {
         type: Schema.slack.types.interactivity,
       },
+      add_reaction_trigger_id: { type: Schema.types.string },
+      remove_reaction_trigger_id: { type: Schema.types.string },
     },
     required: ["channels", "interactivity"],
   },
@@ -70,6 +72,9 @@ const GetTriggerDataFunction = SlackFunction(
       outputs: {
         channels: response.items[0].channels,
         interactivity: inputs.interactivity,
+        add_reaction_trigger_id: response.items[0].add_reaction_trigger_id,
+        remove_reaction_trigger_id:
+          response.items[0].remove_reaction_trigger_id,
       },
     };
   },
