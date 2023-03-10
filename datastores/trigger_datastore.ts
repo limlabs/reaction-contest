@@ -40,6 +40,7 @@ export const saveActiveChannels = async (
       `failed to update active trigger datastore: ${response.error}`,
     );
   }
+  return response;
 };
 
 export const TriggerDatastore = DefineDatastore(TriggerDatastoreSchema);

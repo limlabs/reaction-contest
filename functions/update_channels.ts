@@ -92,11 +92,18 @@ const UpdateChannelsFunction = SlackFunction(
         if (!removeTriggerResponse.ok) {
           `failed to create ReactionRemovedTrigger: ${response.error}`;
         }
-        const saveChannelsResponse = saveActiveChannels(client, {
+        console.log("removeTriggerResponse", removeTriggerResponse.trigger.id);
+        const saveChannelsResponse = await saveActiveChannels(client, {
           channels: inputs.newChannels,
           add_reaction_trigger_id: addTriggerResponse.trigger.id,
           remove_reaction_trigger_id: removeTriggerResponse.trigger.id,
         });
+        console.log("saveChannelResponse", saveChannelsResponse);
+        if (saveChannelsResponse.error) {
+          throw new Error(
+            `new active channels didn't save correctly: ${saveChannelsResponse.error}`,
+          );
+        }
       }
     } else {
       if (inputs.newChannels.length > 0) {
@@ -106,16 +113,16 @@ const UpdateChannelsFunction = SlackFunction(
           {
             trigger_id: response.items[0].add_reaction_trigger_id,
             type: "event",
-            name: "ReactionRemoved",
-            description: "Handles when user removes reaction in channel",
+            name: "ReactionAdded",
+            description: "Handles when user adds reaction in channel",
             workflow: "#/workflows/handle_reaction_workflow",
             event: {
-              event_type: "slack#/events/reaction_removed",
+              event_type: "slack#/events/reaction_added",
               channel_ids: inputs.newChannels as PopulatedArray<string>,
             },
             inputs: {
               ...handleReactionInputsBase,
-              action: { value: "removed" },
+              action: { value: "added" },
             },
           },
         );
@@ -150,11 +157,12 @@ const UpdateChannelsFunction = SlackFunction(
             `failed to update ReactionRemovedTrigger: ${response.error}`,
           );
         }
-        const saveChannelsResponse = saveActiveChannels(client, {
+        const saveChannelsResponse = await saveActiveChannels(client, {
           channels: inputs.newChannels,
           add_reaction_trigger_id: addTriggerResponse.trigger.id,
           remove_reaction_trigger_id: removeTriggerResponse.trigger.id,
         });
+        console.log("saveChannelResponse", saveChannelsResponse);
       }
 
       return { outputs: {} };
