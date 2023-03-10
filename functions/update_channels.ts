@@ -9,7 +9,7 @@ import HandleReactionAddedTrigger from "../triggers/reaction_added_trigger.ts";
 import HandleReactionRemovedTrigger from "../triggers/reaction_removed_trigger.ts";
 import HandleReactionWorkflow from "../workflows/handle_reaction_workflow.ts";
 import { handleReactionInputsBase } from "../core/schemas.ts";
-import { PopulatedArray } from "https://deno.land/x/deno_slack_api@1.7.0/type-helpers";
+import { PopulatedArray } from "https://deno.land/x/deno_slack_api@1.7.0/type-helpers.ts";
 
 export const UpdateChannelsFunctionDefinition = DefineFunction({
   callback_id: "update_channels",
@@ -44,6 +44,12 @@ const UpdateChannelsFunction = SlackFunction(
       );
     }
     if (response.items.length === 0) {
+      console.log(
+        "response.items",
+        response.items,
+        "inputs.newChannels",
+        inputs.newChannels,
+      );
       if (inputs.newChannels.length > 0) {
         const addTriggerResponse = await client.workflows.triggers.create<
           typeof HandleReactionWorkflow.definition
@@ -54,7 +60,7 @@ const UpdateChannelsFunction = SlackFunction(
           workflow: "#/workflows/handle_reaction_workflow",
           event: {
             event_type: "slack#/events/reaction_added",
-            channel_ids: inputs.newChannels as PopulatedArray,
+            channel_ids: inputs.newChannels as PopulatedArray<string>,
           },
           inputs: {
             ...handleReactionInputsBase,
@@ -66,8 +72,23 @@ const UpdateChannelsFunction = SlackFunction(
             `failed to create HandleReactionAddedTrigger: ${response.error}`,
           );
         }
-        const removeTriggerResponse = await client.workflows.triggers.create(
-          HandleReactionRemovedTrigger,
+        const removeTriggerResponse = await client.workflows.triggers.create<
+          typeof HandleReactionWorkflow.definition
+        >(
+          {
+            type: "event",
+            name: "ReactionRemoved",
+            description: "Handles when user removes reaction in channel",
+            workflow: "#/workflows/handle_reaction_workflow",
+            event: {
+              event_type: "slack#/events/reaction_removed",
+              channel_ids: inputs.newChannels as PopulatedArray<string>,
+            },
+            inputs: {
+              ...handleReactionInputsBase,
+              action: { value: "removed" },
+            },
+          },
         );
         if (!removeTriggerResponse.ok) {
           `failed to create HandleReactionRemovedTrigger: ${response.error}`;
