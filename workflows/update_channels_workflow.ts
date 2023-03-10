@@ -1,5 +1,5 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
-import { GetTriggerDataFunctionDefinition } from "../datastores/trigger_datastore.ts";
+import { GetTriggerDataFunctionDefinition } from "../functions/get_trigger_data.ts";
 
 const UpdateChannelsWorkflow = DefineWorkflow({
   callback_id: "update_channels_workflow",
@@ -32,14 +32,30 @@ const inputForm = UpdateChannelsWorkflow.addStep(
         {
           name: "channels",
           title: "Channels",
-          type: Schema.types.string,
-          default: triggerData.outputs.data.channels +
-            "hello world",
+          type: Schema.types.array,
+          items: {
+            title: "channel",
+            description: "channels for reaction events",
+            type: Schema.slack.types.channel_id,
+          },
+          default: triggerData.outputs.channels,
         },
       ],
       required: ["channels"],
     },
   },
 );
+
+if (inputForm.outputs.fields.channels === "hello") {
+  UpdateChannelsWorkflow.addStep(Schema.slack.functions.SendMessage, {
+    channel_id: UpdateChannelsWorkflow.inputs.channel,
+    message: "U typed hiiiiii",
+  });
+} else {
+  UpdateChannelsWorkflow.addStep(Schema.slack.functions.SendMessage, {
+    channel_id: UpdateChannelsWorkflow.inputs.channel,
+    message: `U typed ${inputForm.outputs.fields.channels}!`,
+  });
+}
 
 export default UpdateChannelsWorkflow;
