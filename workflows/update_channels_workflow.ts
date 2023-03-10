@@ -14,12 +14,10 @@ const UpdateChannelsWorkflow = DefineWorkflow({
   },
 });
 
-// const triggerData = UpdateChannelsWorkflow.addStep(
-//   GetTriggerDataFunctionDefinition,
-//   {},
-// );
-
-// const channelIdString = triggerData.outputs.data.channels;
+const triggerData = UpdateChannelsWorkflow.addStep(
+  GetTriggerDataFunctionDefinition,
+  { interactivity: UpdateChannelsWorkflow.inputs.interactivity },
+);
 
 const inputForm = UpdateChannelsWorkflow.addStep(
   Schema.slack.functions.OpenForm,
@@ -27,7 +25,7 @@ const inputForm = UpdateChannelsWorkflow.addStep(
     title: "Submit active channels",
     description:
       "Copy/paste Slack channel ids separated by commas to track reactions on those channels.",
-    interactivity: UpdateChannelsWorkflow.inputs.interactivity,
+    interactivity: triggerData.outputs.interactivity,
     submit_label: "Submit channels",
     fields: {
       elements: [
@@ -35,8 +33,7 @@ const inputForm = UpdateChannelsWorkflow.addStep(
           name: "channels",
           title: "Channels",
           type: Schema.types.string,
-          default:
-            // channelIdString +
+          default: triggerData.outputs.data.channels +
             "hello world",
         },
       ],
