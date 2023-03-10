@@ -1,10 +1,4 @@
-import {
-  DefineDatastore,
-  DefineFunction,
-  DefineType,
-  Schema,
-  SlackFunction,
-} from "deno-slack-sdk/mod.ts";
+import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.7.0/types.ts";
 
 import { appPrefix } from "../core/config.ts";

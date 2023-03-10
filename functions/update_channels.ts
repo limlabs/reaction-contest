@@ -1,15 +1,8 @@
-import {
-  DefineFunction,
-  DefineType,
-  Schema,
-  SlackFunction,
-} from "deno-slack-sdk/mod.ts";
+import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import {
   saveActiveChannels,
   TriggerDatastoreName,
 } from "../datastores/trigger_datastore.ts";
-import HandleReactionAddedTrigger from "../triggers/reaction_added_trigger.ts";
-import HandleReactionRemovedTrigger from "../triggers/reaction_removed_trigger.ts";
 import HandleReactionWorkflow from "../workflows/handle_reaction_workflow.ts";
 import { handleReactionInputsBase } from "../core/schemas.ts";
 import { PopulatedArray } from "https://deno.land/x/deno_slack_api@1.7.0/type-helpers.ts";
