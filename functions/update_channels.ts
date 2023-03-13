@@ -62,7 +62,9 @@ const UpdateChannelsFunction = SlackFunction(
             `failed to create ReactionAddedTrigger: ${response.error}`,
           );
         }
-        console.log("addTriggerResponse", addTriggerResponse.trigger.id);
+
+        console.log("reaction_added trigger created with id", addTriggerResponse.trigger.id);
+        
         const removeTriggerResponse = await client.workflows.triggers.create<
           typeof HandleReactionWorkflow.definition
         >(
