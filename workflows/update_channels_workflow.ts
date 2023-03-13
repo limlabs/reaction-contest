@@ -42,7 +42,7 @@ const inputForm = UpdateChannelsWorkflow.addStep(
           default: triggerData.outputs.channels,
         },
       ],
-      required: ["channels"],
+      required: [],
     },
   },
 );
