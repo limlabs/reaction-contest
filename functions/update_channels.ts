@@ -39,7 +39,6 @@ const UpdateChannelsFunction = SlackFunction(
         `failed to get trigger data from datastore: ${response.error}`,
       );
     }
-    console.log("response", response);
     if (response.items.length === 0) {
       if (inputs.newChannels.length > 0) {
         const addTriggerResponse = await client.workflows.triggers.create<
