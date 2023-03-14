@@ -25,7 +25,7 @@ const inputForm = UpdateChannelsWorkflow.addStep(
   {
     title: "Submit active channels",
     description:
-      "Copy/paste Slack channel ids separated by commas to track reactions on those channels.",
+      "Select channels to listen for reactions, or submit empty form to delete all listeners.",
     interactivity: triggerData.outputs.interactivity,
     submit_label: "Submit channels",
     fields: {

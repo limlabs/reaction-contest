@@ -6,6 +6,7 @@ import {
 import { FunctionHandlerReturnArgs } from "https://deno.land/x/deno_slack_sdk@1.6.0/functions/types.ts";
 import {
   CreateReactionEventTrigger,
+  DeleteTrigger,
   UpdateReactionEventTrigger,
 } from "./runtime_event_trigger_functions.ts";
 
@@ -89,24 +90,23 @@ const UpdateChannelsFunction = SlackFunction(
           remove_reaction_trigger_id: removeTriggerResponse.trigger.id,
         });
         console.log("saveChannelResponse", saveChannelsResponse);
-      }
-      // else { // user entered no triggers -> delete saved triggers
-      //   const [addTriggerResponse, removeTriggerResponse] = await Promise.all([
-      //     DeleteTrigger(client, addReactionTriggerID),
-      //     DeleteTrigger(client, removeReactionTriggerId),
-      //   ]);
-      //   const datastoreResponse = await client.apps.datastore.delete({
-      //     datastore: TriggerDatastoreName,
-      //     id: addReactionTriggerID,
-      //   });
+      } else { // user entered no triggers -> delete saved triggers
+        const [addTriggerResponse, removeTriggerResponse] = await Promise.all([
+          DeleteTrigger(client, addReactionTriggerID),
+          DeleteTrigger(client, removeReactionTriggerId),
+        ]);
+        const datastoreResponse = await client.apps.datastore.delete({
+          datastore: TriggerDatastoreName,
+          id: addReactionTriggerID,
+        });
 
-      //   if (!datastoreResponse.ok) {
-      //     throw new Error(
-      //       `Trigger datastore data didn't delete properly: ${datastoreResponse.error}`,
-      //     );
-      //   }
-      //   console.log("addTriggerResponse", addTriggerResponse);
-      // }
+        if (!datastoreResponse.ok) {
+          throw new Error(
+            `Trigger datastore data didn't delete properly: ${datastoreResponse.error}`,
+          );
+        }
+        console.log("addTriggerResponse", addTriggerResponse);
+      }
 
       return { outputs: {} } as FunctionHandlerReturnArgs;
     }
