@@ -7,6 +7,8 @@ import HandleReactionWorkflow from "../workflows/handle_reaction_workflow.ts";
 import { handleReactionInputsBase } from "../core/schemas.ts";
 import { PopulatedArray } from "https://deno.land/x/deno_slack_api@1.7.0/type-helpers.ts";
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
+import { ReactionEventType } from "../domain/reaction.ts";
+import { FunctionHandlerReturnArgs } from "https://deno.land/x/deno_slack_sdk@1.6.0/functions/types.ts";
 
 export const UpdateChannelsFunctionDefinition = DefineFunction({
   callback_id: "update_channels",
@@ -29,163 +31,103 @@ export const UpdateChannelsFunctionDefinition = DefineFunction({
   },
 });
 
-const CreateReactionAddedTrigger = async (
+const CreateReactionEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
+  action: ReactionEventType,
 ) => {
-  const addTriggerResponse = await client.workflows.triggers.create<
+  const createTriggerResponse = await client.workflows.triggers.create<
     typeof HandleReactionWorkflow.definition
   >({
     type: "event",
-    name: "ReactionAdded",
-    description: "Handles when user adds reaction in channel",
+    name: action === "added" ? "ReactionAdded" : "ReactionRemoved",
+    description: `Handles when user ${
+      action === "added" ? "adds" : "removes"
+    } reaction in channel`,
     workflow: "#/workflows/handle_reaction_workflow",
     event: {
-      event_type: "slack#/events/reaction_added",
+      event_type: `slack#/events/reaction_${action}`,
       channel_ids: newChannels as PopulatedArray<string>,
     },
     inputs: {
       ...handleReactionInputsBase,
-      action: { value: "added" },
+      action: { value: action },
     },
   });
 
-  if (!addTriggerResponse.ok) {
+  if (!createTriggerResponse.ok) {
     throw new Error(
-      `failed to create ReactionAddedTrigger: ${addTriggerResponse.error}`,
+      `failed to create Reaction${
+        action === "added" ? "Added" : "Removed"
+      }Trigger: ${createTriggerResponse.error}`,
     );
   }
 
   console.log(
-    "reaction_added trigger created with id",
-    addTriggerResponse.trigger.id,
+    `reaction_${action} trigger created with id`,
+    createTriggerResponse.trigger.id,
   );
 
-  return addTriggerResponse;
+  return createTriggerResponse;
 };
 
-const CreateReactionRemovedTrigger = async (
-  client: SlackAPIClient,
-  newChannels: string[],
-) => {
-  const removeTriggerResponse = await client.workflows.triggers.create<
-    typeof HandleReactionWorkflow.definition
-  >(
-    {
-      type: "event",
-      name: "ReactionRemoved",
-      description: "Handles when user removes reaction in channel",
-      workflow: "#/workflows/handle_reaction_workflow",
-      event: {
-        event_type: "slack#/events/reaction_removed",
-        channel_ids: newChannels as PopulatedArray<string>,
-      },
-      inputs: {
-        ...handleReactionInputsBase,
-        action: { value: "removed" },
-      },
-    },
-  );
-
-  if (!removeTriggerResponse.ok) {
-    throw new Error(
-      `failed to create ReactionRemovedTrigger: ${removeTriggerResponse.error}`,
-    );
-  }
-
-  console.log(
-    "reaction_removed trigger created with id",
-    removeTriggerResponse.trigger.id,
-  );
-
-  return removeTriggerResponse;
-};
-
-const UpdateReactionAddedTrigger = async (
+const UpdateReactionEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
   triggerId: string,
+  action: ReactionEventType,
 ) => {
-  const addTriggerResponse = await client.workflows.triggers.update<
-    typeof HandleReactionWorkflow.definition
-  >(
-    {
-      // trigger_id: response.items[0].add_reaction_trigger_id,
-      trigger_id: triggerId,
-      type: "event",
-      name: "ReactionAdded",
-      description: "Handles when user adds reaction in channel",
-      workflow: "#/workflows/handle_reaction_workflow",
-      event: {
-        event_type: "slack#/events/reaction_added",
-        channel_ids: newChannels as PopulatedArray<string>,
-      },
-      inputs: {
-        ...handleReactionInputsBase,
-        action: { value: "added" },
-      },
-    },
-  );
-
-  if (!addTriggerResponse.ok) {
-    throw new Error(
-      `failed to update ReactionAddedTrigger: ${addTriggerResponse.error}`,
-    );
-  }
-
-  return addTriggerResponse;
-};
-
-const UpdateReactionRemovedTrigger = async (
-  client: SlackAPIClient,
-  newChannels: string[],
-  triggerId: string,
-) => {
-  const removeTriggerResponse = await client.workflows.triggers.update<
+  const updateTriggerResponse = await client.workflows.triggers.update<
     typeof HandleReactionWorkflow.definition
   >(
     {
       trigger_id: triggerId,
       type: "event",
-      name: "ReactionRemoved",
-      description: "Handles when user removes reaction in channel",
+      name: action === "added" ? "ReactionAdded" : "ReactionRemoved",
+      description: `Handles when user ${
+        action === "added" ? "adds" : "removes"
+      } reaction in channel`,
       workflow: "#/workflows/handle_reaction_workflow",
       event: {
-        event_type: "slack#/events/reaction_removed",
+        event_type: `slack#/events/reaction_${action}`,
         channel_ids: newChannels as PopulatedArray<string>,
       },
       inputs: {
         ...handleReactionInputsBase,
-        action: { value: "removed" },
+        action: { value: action },
       },
     },
   );
-  if (!removeTriggerResponse.ok) {
-    throw new Error(
-      `failed to update ReactionRemovedTrigger: ${removeTriggerResponse.error}`,
-    );
-  }
-  return removeTriggerResponse;
-};
 
-const DeleteTrigger = async (
-  client: SlackAPIClient,
-  triggerId: string,
-) => {
-  const response = await client.workflows.triggers.delete({
-    trigger_id: triggerId,
-  });
-
-  if (!response.ok) {
+  if (!updateTriggerResponse.ok) {
     throw new Error(
-      `failed to delete trigger: ${response.error}`,
+      `failed to update Reaction${
+        action === "added" ? "Added" : "Removed"
+      }Trigger: ${updateTriggerResponse.error}`,
     );
   }
 
-  console.log(`Trigger ${triggerId} deleted`);
-
-  return response;
+  return updateTriggerResponse;
 };
+
+// const DeleteTrigger = async (
+//   client: SlackAPIClient,
+//   triggerId: string,
+// ) => {
+//   const response = await client.workflows.triggers.delete({
+//     trigger_id: triggerId,
+//   });
+
+//   if (!response.ok) {
+//     throw new Error(
+//       `failed to delete trigger: ${response.error}`,
+//     );
+//   }
+
+//   console.log(`Trigger ${triggerId} deleted`);
+
+//   return response;
+// };
 
 const UpdateChannelsFunction = SlackFunction(
   UpdateChannelsFunctionDefinition,
@@ -202,8 +144,8 @@ const UpdateChannelsFunction = SlackFunction(
     if (response.items.length === 0) { // no triggers in datastore
       if (inputs.newChannels.length > 0) { // user entered triggers to form -> create triggers
         const [addTriggerResponse, removeTriggerResponse] = await Promise.all([
-          CreateReactionAddedTrigger(client, inputs.newChannels),
-          CreateReactionRemovedTrigger(client, inputs.newChannels),
+          CreateReactionEventTrigger(client, inputs.newChannels, "added"),
+          CreateReactionEventTrigger(client, inputs.newChannels, "removed"),
         ]);
         const saveChannelsResponse = await saveActiveChannels(client, {
           channels: inputs.newChannels,
@@ -224,15 +166,17 @@ const UpdateChannelsFunction = SlackFunction(
 
       if (inputs.newChannels.length > 0) { // user entered triggers to form -> update saved triggers
         const [addTriggerResponse, removeTriggerResponse] = await Promise.all([
-          UpdateReactionAddedTrigger(
+          UpdateReactionEventTrigger(
             client,
             inputs.newChannels,
             addReactionTriggerID,
+            "added",
           ),
-          UpdateReactionRemovedTrigger(
+          UpdateReactionEventTrigger(
             client,
             inputs.newChannels,
             removeReactionTriggerId,
+            "removed",
           ),
         ]);
         const saveChannelsResponse = await saveActiveChannels(client, {
@@ -260,7 +204,7 @@ const UpdateChannelsFunction = SlackFunction(
       //   console.log("addTriggerResponse", addTriggerResponse);
       // }
 
-      return { outputs: {} };
+      return { outputs: {} } as FunctionHandlerReturnArgs;
     }
   },
 );
