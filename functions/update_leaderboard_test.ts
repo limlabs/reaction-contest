@@ -72,6 +72,7 @@ Deno.test("UpdateLeaderboard works when there is an old leaderboard to update", 
   const { error } = await UpdateLeaderboardFunction(
     createContext({ inputs: {} }),
   );
+
   assertEquals(error, undefined);
 });
 

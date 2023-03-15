@@ -1,5 +1,5 @@
 import { DefineWorkflow } from "deno-slack-sdk/mod.ts";
-import { UpdateLeaderboardFunction } from "../functions/update_leaderboard.ts";
+import { UpdateLeaderboardFunctionDefinition } from "../functions/update_leaderboard.ts";
 
 const UpdateLeaderboardWorkflow = DefineWorkflow({
   callback_id: "update_leaderboard_workflow",
@@ -8,7 +8,7 @@ const UpdateLeaderboardWorkflow = DefineWorkflow({
 });
 
 UpdateLeaderboardWorkflow.addStep(
-  UpdateLeaderboardFunction,
+  UpdateLeaderboardFunctionDefinition,
   {},
 );
 

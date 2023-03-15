@@ -4,6 +4,8 @@ import ViewLeaderboardWorkflow from "./workflows/view_leaderboard_workflow.ts";
 import HandleReactionAddedWorkflow from "./workflows/handle_reaction_workflow.ts";
 import UpdateLeaderboardWorkflow from "./workflows/update_leaderboard_workflow.ts";
 import { LeaderboardDatastore } from "./datastores/leaderboard_datastore.ts";
+import { TriggerDatastore } from "./datastores/trigger_datastore.ts";
+import UpdateChannelsWorkflow from "./workflows/update_channels_workflow.ts";
 
 /**
  * The app manifest contains the app's configuration. This
@@ -19,9 +21,10 @@ export default Manifest({
     HandleReactionAddedWorkflow,
     UpdateLeaderboardWorkflow,
     ViewLeaderboardWorkflow,
+    UpdateChannelsWorkflow,
   ],
   outgoingDomains: [],
-  datastores: [ReactionDatastore, LeaderboardDatastore],
+  datastores: [ReactionDatastore, LeaderboardDatastore, TriggerDatastore],
   functions: [],
   botScopes: [
     "commands",
@@ -34,8 +37,6 @@ export default Manifest({
     "groups:history",
     "im:read",
     "mpim:read",
+    "triggers:write",
   ],
 });
-
-// {"datastore": "emoji_datastore", "item": {"emoji": "smiley", "quantity": 1}}
-// {"item": {"emoji": "smiley", "quantity": 1}, "datastore": "emoji_datastore"}
