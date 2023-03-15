@@ -37,7 +37,6 @@ const UpdateChannelsFunction = SlackFunction(
     const triggerDatastoreResponse = await client.apps.datastore.query({
       datastore: TriggerDatastoreName,
     });
-
     if (!triggerDatastoreResponse.ok) {
       throw new Error(
         `failed to get trigger data from datastore: ${triggerDatastoreResponse.error}`,
@@ -107,9 +106,8 @@ const UpdateChannelsFunction = SlackFunction(
         }
         console.log("addTriggerResponse", addTriggerResponse);
       }
-
-      return { outputs: {} } as FunctionHandlerReturnArgs;
     }
+    return { outputs: {} };
   },
 );
 

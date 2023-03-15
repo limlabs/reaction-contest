@@ -24,10 +24,8 @@ const UpdateLeaderboardFunction = SlackFunction(
     console.log("updating leaderboard");
     const { last_updated_timestamp, data } = await getLeaderboardInfo(client);
     const events = await getReactionsSince(client, last_updated_timestamp);
-    console.log("events since", events);
     const leaderboardData = topReactions(events, data);
     const leaderboard = createReactionLeaderboard("top", leaderboardData);
-    console.log("LEADERBOARD", leaderboard);
     await saveLeaderboard(client, leaderboard);
     console.log('updated "top" leaderboard');
     console.log(leaderboardData);
@@ -70,13 +68,11 @@ export const getLeaderboardInfo = async (
   }
 
   if (response.items.length === 0) {
-    console.log("response.items.length === 0");
     return {
       data: [],
       last_updated_timestamp: Date.now(),
     };
   }
-  console.log("response.items[0]", response.items[0]);
   return {
     ...response.items[0],
     data: JSON.parse(response.items[0].data),
