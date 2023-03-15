@@ -3,7 +3,6 @@ import {
   saveActiveChannels,
   TriggerDatastoreName,
 } from "../datastores/trigger_datastore.ts";
-import { FunctionHandlerReturnArgs } from "https://deno.land/x/deno_slack_sdk@1.6.0/functions/types.ts";
 import {
   CreateReactionEventTrigger,
   DeleteTrigger,
