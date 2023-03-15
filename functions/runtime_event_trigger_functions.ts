@@ -1,17 +1,17 @@
 import HandleReactionWorkflow from "../workflows/handle_reaction_workflow.ts";
 import { handleReactionInputsBase } from "../core/schemas.ts";
 import { PopulatedArray } from "https://deno.land/x/deno_slack_api@1.7.0/type-helpers.ts";
-import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
+import {
+  SlackAPIClient,
+  Trigger,
+} from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
 import { ReactionEventType } from "../domain/reaction.ts";
 
-export const CreateReactionEventTrigger = async (
-  client: SlackAPIClient,
+const makeTriggerParams = (
   newChannels: string[],
   action: ReactionEventType,
-) => {
-  const createTriggerResponse = await client.workflows.triggers.create<
-    typeof HandleReactionWorkflow.definition
-  >({
+): Trigger<typeof HandleReactionWorkflow.definition> => {
+  return {
     type: "event",
     name: action === "added" ? "ReactionAdded" : "ReactionRemoved",
     description: `Handles when user ${
@@ -26,7 +26,17 @@ export const CreateReactionEventTrigger = async (
       ...handleReactionInputsBase,
       action: { value: action },
     },
-  });
+  };
+};
+
+export const CreateReactionEventTrigger = async (
+  client: SlackAPIClient,
+  newChannels: string[],
+  action: ReactionEventType,
+) => {
+  const createTriggerResponse = await client.workflows.triggers.create<
+    typeof HandleReactionWorkflow.definition
+  >(makeTriggerParams(newChannels, action));
 
   if (!createTriggerResponse.ok) {
     throw new Error(
@@ -53,23 +63,7 @@ export const UpdateReactionEventTrigger = async (
   const updateTriggerResponse = await client.workflows.triggers.update<
     typeof HandleReactionWorkflow.definition
   >(
-    {
-      trigger_id: triggerId,
-      type: "event",
-      name: action === "added" ? "ReactionAdded" : "ReactionRemoved",
-      description: `Handles when user ${
-        action === "added" ? "adds" : "removes"
-      } reaction in channel`,
-      workflow: "#/workflows/handle_reaction_workflow",
-      event: {
-        event_type: `slack#/events/reaction_${action}`,
-        channel_ids: newChannels as PopulatedArray<string>,
-      },
-      inputs: {
-        ...handleReactionInputsBase,
-        action: { value: action },
-      },
-    },
+    { ...makeTriggerParams(newChannels, action), trigger_id: triggerId },
   );
 
   if (!updateTriggerResponse.ok) {

@@ -91,7 +91,7 @@ const UpdateChannelsFunction = SlackFunction(
         });
         console.log("saveChannelResponse", saveChannelsResponse);
       } else { // user entered no triggers -> delete saved triggers
-        const [addTriggerResponse, removeTriggerResponse] = await Promise.all([
+        const [addTriggerResponse] = await Promise.all([
           DeleteTrigger(client, addReactionTriggerID),
           DeleteTrigger(client, removeReactionTriggerId),
         ]);
