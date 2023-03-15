@@ -3,7 +3,6 @@ import {
   saveActiveChannels,
   TriggerDatastoreName,
 } from "../datastores/trigger_datastore.ts";
-import { FunctionHandlerReturnArgs } from "https://deno.land/x/deno_slack_sdk@1.6.0/functions/types.ts";
 import {
   CreateReactionEventTrigger,
   DeleteTrigger,
@@ -37,7 +36,6 @@ const UpdateChannelsFunction = SlackFunction(
     const triggerDatastoreResponse = await client.apps.datastore.query({
       datastore: TriggerDatastoreName,
     });
-
     if (!triggerDatastoreResponse.ok) {
       throw new Error(
         `failed to get trigger data from datastore: ${triggerDatastoreResponse.error}`,
@@ -107,9 +105,8 @@ const UpdateChannelsFunction = SlackFunction(
         }
         console.log("addTriggerResponse", addTriggerResponse);
       }
-
-      return { outputs: {} } as FunctionHandlerReturnArgs;
     }
+    return { outputs: {} };
   },
 );
 
