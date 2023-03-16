@@ -22,73 +22,88 @@ feature that can be used for storing simple information.
 
 ## App Overview
 
-`update_channels_form_trigger` opens a form to choose which channels in your workspace will listen for reaction events. Submitting the form creates or updates (or deletes) triggers for `reaction_added` and `reaction_removed` events. Those events send data to `reaction_datastore`.
+`update_channels_form_trigger` opens a form to choose which channels in your
+workspace will listen for reaction events. Submitting the form creates or
+updates (or deletes) triggers for `reaction_added` and `reaction_removed`
+events. Those events send data to `reaction_datastore`.
 
-`view_leaderboard_link_trigger` updates `leaderboard_datastore` with the latest data from `reaction_datastore` and sends a message with the updated top ten most-used emoji reactions.
+`view_leaderboard_link_trigger` updates `leaderboard_datastore` with the latest
+data from `reaction_datastore` and sends a message with the updated top ten
+most-used emoji reactions.
 
-For good measure, `leaderboard_datastore` is also updated hourly with the recurring scheduled `update_leaderboard_trigger`.
+For good measure, `leaderboard_datastore` is also updated hourly with the
+recurring scheduled `update_leaderboard_trigger`.
 
 ```mermaid
 flowchart LR
-  slack -- channel form trigger --> update_channels -- add/update/delete --> trigger_datastore
   slack -- reaction_added/removed --> handle_reaction
+  slack -- channel form trigger --> update_channels -- add/update/delete --> trigger_datastore
   slack -- "hourly update" --> update_leaderboard
   slack -- "link trigger" --> view_leaderboard
   handle_reaction -- "add to datastore" --> reaction_datastore
   update_leaderboard -- "update w/ new reactions" --> leaderboard_datastore
   view_leaderboard --> update_leaderboard
-  view_leaderboard -- "read leaderboard" --> leaderboard_datastore
+  view_leaderboard -- "read leaderboard after update" --> leaderboard_datastore
   view_leaderboard -- "send response" --> slack
 ```
 
 ## Datastores
 
--   `reaction_datastore` Info about emoji reaction events including:
+- `reaction_datastore` Info about emoji reaction events including:
 
-    -   Emoji used
-    -   Whether emoji was added or removed
-    -   Timestamp
+  - Emoji used
+  - Whether emoji was added or removed
+  - Timestamp
 
--   `leaderboard_datastore`
+- `leaderboard_datastore`
 
-    -   Array of most used emojis, with count
-    -   Timestamp of last update
+  - Array of most used emojis, with count
+  - Timestamp of last update
 
--   `trigger_datastore`
-    -   Array of slack channels to listen to
-    -   `reaction_added` trigger ID
-    -   `reaction_removed` trigger ID
+- `trigger_datastore`
+  - Array of slack channels to listen to
+  - `reaction_added` trigger ID
+  - `reaction_removed` trigger ID
 
 ## Functions
 
--   `handle_reaction`
+- `handle_reaction`
 
-    -   Triggers: `reaction_added`, `reaction_removed` events
-    -   Action: adds reaction event data to `reaction_datastore`
+  - Triggers: `reaction_added`, `reaction_removed` events
+  - Action: adds reaction event data to `reaction_datastore`
 
--   `view_leaderboard`
+- `update_channels`
 
-    -   Triggers: `view_leaderboard_trigger` link trigger
-    -   Action: runs `update_leaderboard`, then reads `leaderboard_datastore` and sends a message with leaderboard data to the channel that called the link trigger
+  - Triggers: `update_channels_form_trigger` link trigger
+  - Action: uses form data to create, update, or delete `reaction_added` and
+    `reaction_removed` event triggers, and stores data in `trigger_datastore`
 
--   `update_leaderboard`
+- `view_leaderboard`
 
-    -   Triggers: hourly scheduled update, `view_leaderboard_trigger`link trigger
-    -   Action: queries `reaction_datastore` for all events since last update, then
-        updates `leaderboard_datastore` with these events
+  - Triggers: `view_leaderboard_trigger` link trigger
+  - Action: runs `update_leaderboard`, then reads `leaderboard_datastore` and
+    sends a message with leaderboard data to the channel that called the link
+    trigger
 
--   `update_channels`
+- `update_leaderboard`
 
-    -   Triggers: `update_channels_form_trigger` link trigger
-    -   Action: uses form data to create, update, or delete `reaction_added` and `reaction_removed` event triggers, and stores data in `trigger_datastore`
+  - Triggers: hourly scheduled update, `view_leaderboard_trigger`link trigger
+  - Action: queries `reaction_datastore` for all events since last update, then
+    updates `leaderboard_datastore` with these events
 
-    ```mermaid
-    sequenceDiagram
-    update_leaderboard->>leaderboard_datastore: getLastUpdated
-    leaderboard_datastore-->>update_leaderboard: last_updated_timestamp
-    update_leaderboard->>reaction_datastore: getReactionsSince
-    reaction_datastore-->>update_leaderboard: latest reactions
-    update_leaderboard->>leaderboard_datastore: getLeaderboardData
-    leaderboard_datastore-->>update_leaderboard: leaderboard data
-    update_leaderboard->>leaderboard_datastore: saveLeaderboard
-    ```
+## Workflows
+
+These workflows are complex enough to warrant diagrams.
+
+### update_channels_workflow
+
+```mermaid
+sequenceDiagram
+  slack ->> trigger_datastore: get trigger data
+  trigger_datastore -->> slack: open Form with channel data
+  slack ->> update_channels: channels selected from Form
+  update_channels ->> trigger_datastore: get trigger data
+  trigger_datastore -->> channels, trigger IDs
+  update_channels ->> slack: create/update/delete triggers
+  update_channels ->> trigger_datastore: add/update/delete trigger data
+```
