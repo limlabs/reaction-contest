@@ -1,4 +1,4 @@
-# Emoji Contest Slack App
+# Reaction Contest Design Doc
 
 ## Summary
 
@@ -50,57 +50,57 @@ flowchart LR
 
 ## Datastores
 
-- `reaction_datastore` Info about emoji reaction events including:
+-   `reaction_datastore` Info about emoji reaction events including:
 
-  - Emoji used
-  - Whether emoji was added or removed
-  - Timestamp
+    -   Emoji used
+    -   Whether emoji was added or removed
+    -   Timestamp
 
-- `leaderboard_datastore`
+-   `leaderboard_datastore`
 
-  - Array of most used emojis, with count
-  - Timestamp of last update
+    -   Array of most used emojis, with count
+    -   Timestamp of last update
 
-- `trigger_datastore`
-  - Array of slack channels to listen to
-  - `reaction_added` trigger ID
-  - `reaction_removed` trigger ID
+-   `trigger_datastore`
+    -   Array of slack channels to listen to
+    -   `reaction_added` trigger ID
+    -   `reaction_removed` trigger ID
 
 ## Functions
 
-- `handle_reaction`
+-   `handle_reaction`
 
-  - Triggers: `reaction_added`, `reaction_removed` events
-  - Action: adds reaction event data to `reaction_datastore`
+    -   Triggers: `reaction_added`, `reaction_removed` events
+    -   Action: adds reaction event data to `reaction_datastore`
 
-- `update_channels`
+-   `update_channels`
 
-  - Triggers: `update_channels_form_trigger` link trigger
-  - Action: uses form data to create, update, or delete `reaction_added` and
-    `reaction_removed` event triggers, and stores data in `trigger_datastore`
-  - Logic:
-    - Trigger data is NOT in `trigger_datastore` AND user submitted channels
-      with Form:
-      - Create triggers and add data to `trigger_datastore`
-    - Trigger data IS in `trigger_datastore` AND user submitted channels with
-      Form:
-      - Update existing triggers with new channels and update datastore
-    - Trigger data IS in `trigger_datastore` AND user submitted empty Form:
-      - Delete triggers and clear `trigger_datastore`
+    -   Triggers: `update_channels_form_trigger` link trigger
+    -   Action: uses form data to create, update, or delete `reaction_added` and
+        `reaction_removed` event triggers, and stores data in `trigger_datastore`
+    -   Logic:
+        -   Trigger data is NOT in `trigger_datastore` AND user submitted channels
+            with Form:
+            -   Create triggers and add data to `trigger_datastore`
+        -   Trigger data IS in `trigger_datastore` AND user submitted channels with
+            Form:
+            -   Update existing triggers with new channels and update datastore
+        -   Trigger data IS in `trigger_datastore` AND user submitted empty Form:
+            -   Delete triggers and clear `trigger_datastore`
 
-- `view_leaderboard`
+-   `view_leaderboard`
 
-  - Triggers: `view_leaderboard_trigger` link trigger
-  - Action: runs `update_leaderboard`, then reads `leaderboard_datastore` and
-    sends a message with leaderboard data to the channel that called the link
-    trigger
+    -   Triggers: `view_leaderboard_trigger` link trigger
+    -   Action: runs `update_leaderboard`, then reads `leaderboard_datastore` and
+        sends a message with leaderboard data to the channel that called the link
+        trigger
 
-- `update_leaderboard`
+-   `update_leaderboard`
 
-  - Triggers: hourly scheduled update, `view_leaderboard_trigger`link trigger
-  - Action: queries `reaction_datastore` for all events since last update, then
-    updates `leaderboard_datastore` with these events
-  - Diagram:
+    -   Triggers: hourly scheduled update, `view_leaderboard_trigger`link trigger
+    -   Action: queries `reaction_datastore` for all events since last update, then
+        updates `leaderboard_datastore` with these events
+    -   Diagram:
 
 ```mermaid
 sequenceDiagram

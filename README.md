@@ -1,106 +1,32 @@
-# Reaction Leaderboard
+# Overview
 
-This chat app provides counts of all the reactions used in Slack.
+Welcome! Reaction Contest is an open source Slack app that keeps track of emoji reactions used in your workspace to generate a leaderboard of the most popular reactions. It's built with [Slack's new modular API](https://api.slack.com/future). Give it a try and tell us what you think!
 
-We built this because we like emojis.
+## Quickstart
 
-## Running the Project Locally
+Apps built with Slack's new API require a workspace on a paid plan, with the Slack Platform Beta permission approved in your workspace's Settings & Permissions. (Pro tip: paid plan cannot still be in trial period.)
 
-To use this project, you first need to install and configure the Slack CLI.
-Step-by-step instructions can be found in our
-[Quickstart Guide](https://api.slack.com/future/quickstart).
+Install and configure the Slack CLI (steps 1 and 2 of [this guide](https://api.slack.com/future/quickstart)).
 
-While building your app, you can see your changes propagated to your workspace
-in real-time with `slack run`. In both the CLI and in Slack, you'll know an app
-is the development version if the name has the string `(dev)` appended.
+The following code block clones this repo, changes into the directory, and deploys:
 
-```zsh
-# Run app locally
-$ slack run
-
-Connected, awaiting events
+```
+slack create reaction-contest -t limlabs/reaction-contest
+cd reaction-contest
+slack deploy
 ```
 
-Once running, click the
-[previously created Shortcut URL](#create-a-link-trigger) associated with the
-`(dev)` version of your app. This should start the included sample workflow.
+Select your workspace to deploy to.
 
-To stop running locally, press `<CTRL> + C` to end the process.
+You'll now be asked to select a trigger to create with deploy. Select `triggers/update_leaderboard_trigger.ts` for best functionality.
 
-## Testing
+Et voilà!
 
-For an example of how to test a function, see
-`functions/greeting_function_test.ts`. Test filenames should be suffixed with
-`_test`.
+## Links
 
-Run all tests with `deno test`:
+See our technical design doc [here](/docs/hld.md).
+Look [here](/docs/slack.md) for a brief guide on how to run and build a Slack app.
 
-```zsh
-$ deno test
-```
+## Donations
 
-## Deploying Your App
-
-Once you're done with development, you can deploy the production version of your
-app to Slack hosting using `slack deploy`:
-
-```zsh
-$ slack deploy
-```
-
-After deploying, [create a new link trigger](#create-a-link-trigger) for the
-production version of your app (not appended with `(dev)`). Once the trigger is
-invoked, the workflow should run just as it did in when developing locally.
-
-### Viewing Activity Logs
-
-Activity logs for the production instance of your application can be viewed with
-the `slack activity` command:
-
-```zsh
-$ slack activity
-```
-
-## Project Structure
-
-### `manifest.ts`
-
-The [app manifest](https://api.slack.com/future/manifest) contains the app's
-configuration. This file defines attributes like app name and description.
-
-### `slack.json`
-
-Used by the CLI to interact with the project's SDK dependencies. It contains
-script hooks that are executed by the CLI and implemented by the SDK.
-
-### `/functions`
-
-[Functions](https://api.slack.com/future/functions) are reusable building blocks
-of automation that accept inputs, perform calculations, and provide outputs.
-Functions can be used independently or as steps in workflows.
-
-### `/workflows`
-
-A [workflow](https://api.slack.com/future/workflows) is a set of steps that are
-executed in order. Each step in a workflow is a function.
-
-Workflows can be configured to run without user input or they can collect input
-by beginning with a [form](https://api.slack.com/future/forms) before continuing
-to the next step.
-
-### `/triggers`
-
-[Triggers](https://api.slack.com/future/triggers) determine when workflows are
-executed. A trigger file describes a scenario in which a workflow should be run,
-such as a user pressing a button or when a specific event occurs.
-
-## Resources
-
-To learn more about developing with the CLI, you can visit the following guides:
-
-- [Creating a new app with the CLI](https://api.slack.com/future/create)
-- [Configuring your app](https://api.slack.com/future/manifest)
-- [Developing locally](https://api.slack.com/future/run)
-
-To view all documentation and guides available, visit the
-[Overview page](https://api.slack.com/future/overview).
+If you like what we're doing, please check out our [Buy Me a Coffee](https://www.buymeacoffee.com/limlabs) to make a one-time donation or set up a recurring membership. Your contribution will help us continue to develop this project and many more open source projects in the future. Thanks!
