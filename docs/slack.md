@@ -100,9 +100,9 @@ such as a user pressing a button or when a specific event occurs.
 
 To learn more about developing with the CLI, you can visit the following guides:
 
--   [Creating a new app with the CLI](https://api.slack.com/future/create)
--   [Configuring your app](https://api.slack.com/future/manifest)
--   [Developing locally](https://api.slack.com/future/run)
+- [Creating a new app with the CLI](https://api.slack.com/future/create)
+- [Configuring your app](https://api.slack.com/future/manifest)
+- [Developing locally](https://api.slack.com/future/run)
 
 To view all documentation and guides available, visit the
 [Overview page](https://api.slack.com/future/overview).
