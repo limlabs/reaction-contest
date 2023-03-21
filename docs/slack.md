@@ -1,4 +1,4 @@
-# Reaction Leaderboard
+# Reaction Contest
 
 This chat app provides counts of all the reactions used in Slack.
 
