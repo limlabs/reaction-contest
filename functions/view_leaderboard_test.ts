@@ -5,30 +5,114 @@ import ViewLeaderboardFunction from "./view_leaderboard.ts";
 
 mf.install();
 
-const mockLeaderboardData = [
-  { reaction: "grinning", count: 100 },
-  { reaction: "smiley", count: 80 },
-  { reaction: "face_with_peeking_eye", count: 75 },
-  { reaction: "sob", count: 30 },
-  { reaction: "eggplant", count: 15 },
-];
+const { createContext } = SlackFunctionTester("view_leaderboard");
 
-const mockLeaderboardMessage =
-  "*Reaction Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n4. :sob: was used 30 times\n5. :eggplant: was used 15 times\n";
+Deno.test("View leaderboard function returns proper text with multiple things on leaderboard", async () => {
+  const mockLeaderboardData = [
+    { reaction: "grinning", count: 100 },
+    { reaction: "smiley", count: 80 },
+    { reaction: "face_with_peeking_eye", count: 75 },
+    { reaction: "sob", count: 30 },
+    { reaction: "eggplant", count: 15 },
+  ];
 
-mf.mock("POST@/api/apps.datastore.query", () => {
-  return new Response(
-    JSON.stringify({
-      ok: true,
-      items: [{ data: JSON.stringify(mockLeaderboardData) }],
-    }),
-  );
-});
+  const mockLeaderboardMessage =
+    "*Reaction Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n4. :sob: was used 30 times\n5. :eggplant: was used 15 times\n";
 
-Deno.test("View leaderboard function returns proper text", async () => {
-  const { createContext } = SlackFunctionTester("view_leaderboard");
+  mf.mock("POST@/api/apps.datastore.query", () => {
+    return new Response(
+      JSON.stringify({
+        ok: true,
+        items: [{ data: JSON.stringify(mockLeaderboardData) }],
+      }),
+    );
+  });
+
   const { outputs } = await ViewLeaderboardFunction(
     createContext({ inputs: {} }),
   );
+
+  assertEquals(outputs?.leaderboardMessage, mockLeaderboardMessage);
+});
+
+Deno.test("View leaderboard returns special message when leaderboard is empty", async () => {
+  const mockLeaderboardData: never[] = [];
+
+  const mockLeaderboardMessage = "React to some posts!";
+
+  mf.mock(
+    "POST@/api/apps.datastore.query",
+    () => {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          items: [{ data: JSON.stringify(mockLeaderboardData) }],
+        }),
+      );
+    },
+  );
+  const { outputs } = await ViewLeaderboardFunction(
+    createContext({ inputs: {} }),
+  );
+
+  assertEquals(outputs?.leaderboardMessage, mockLeaderboardMessage);
+});
+
+Deno.test("View leaderboard returns special message when leaderboard data only has 0 counts", async () => {
+  const mockLeaderboardData = [
+    { reaction: "grinning", count: 0 },
+    { reaction: "smiley", count: 0 },
+    { reaction: "face_with_peeking_eye", count: 0 },
+    { reaction: "sob", count: 0 },
+    { reaction: "eggplant", count: 0 },
+  ];
+
+  const mockLeaderboardMessage = "React to some posts!";
+
+  mf.mock(
+    "POST@/api/apps.datastore.query",
+    () => {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          items: [{ data: JSON.stringify(mockLeaderboardData) }],
+        }),
+      );
+    },
+  );
+  const { outputs } = await ViewLeaderboardFunction(
+    createContext({ inputs: {} }),
+  );
+
+  assertEquals(outputs?.leaderboardMessage, mockLeaderboardMessage);
+});
+
+Deno.test("View leaderboard doesn't show reactions with a 0 count", async () => {
+  const mockLeaderboardData = [
+    { reaction: "grinning", count: 100 },
+    { reaction: "smiley", count: 80 },
+    { reaction: "face_with_peeking_eye", count: 75 },
+    { reaction: "sob", count: 0 },
+    { reaction: "eggplant", count: 0 },
+  ];
+
+  const mockLeaderboardMessage =
+    "*Reaction Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n";
+
+  mf.mock(
+    "POST@/api/apps.datastore.query",
+    () => {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          items: [{ data: JSON.stringify(mockLeaderboardData) }],
+        }),
+      );
+    },
+  );
+  const { outputs } = await ViewLeaderboardFunction(
+    createContext({ inputs: {} }),
+  );
+
   assertEquals(outputs?.leaderboardMessage, mockLeaderboardMessage);
 });

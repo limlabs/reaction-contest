@@ -29,9 +29,17 @@ export default SlackFunction(
     let leaderboardMessage = "*Reaction Contest Leaderboard*\n";
     for (let i = 0; i < leaderboardData.length; ++i) {
       const item = leaderboardData[i];
+      if (item.count === 0) {
+        break;
+      }
       leaderboardMessage += `${i + 1}. :${item.reaction}: was used ${
         item.count === 1 ? "1 time" : `${item.count} times`
       }\n`;
+    }
+    if (leaderboardMessage === "*Reaction Contest Leaderboard*\n") {
+      return {
+        outputs: { leaderboardMessage: "React to some posts!" },
+      };
     }
     return { outputs: { leaderboardMessage } };
   },
