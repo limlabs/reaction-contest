@@ -14,7 +14,7 @@ const mockLeaderboardData = [
 ];
 
 const mockLeaderboardMessage =
-  "*Emoji Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n4. :sob: was used 30 times\n5. :eggplant: was used 15 times\n";
+  "*Reaction Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n4. :sob: was used 30 times\n5. :eggplant: was used 15 times\n";
 
 mf.mock("POST@/api/apps.datastore.query", () => {
   return new Response(
