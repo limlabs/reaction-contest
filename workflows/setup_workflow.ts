@@ -4,7 +4,7 @@ import { UpdateSettingsFunctionDefinition } from "../functions/update_settings.t
 
 const SetupWorkflow = DefineWorkflow({
   callback_id: "setup_workflow",
-  title: "Setup Reaction Contest",
+  title: "Setup",
   description: "Setup and manage Reaction Contest in this workspace",
   input_parameters: {
     properties: {
@@ -23,7 +23,7 @@ const triggerData = SetupWorkflow.addStep(
 const inputForm = SetupWorkflow.addStep(
   Schema.slack.functions.OpenForm,
   {
-    title: "Configure Reaction Contest",
+    title: "SetupReactionContest",
     description:
       "Select channels to listen for reactions. Once you're done, select 'Finish Setup' to install and use @Reaction Contest!",
     interactivity: triggerData.outputs.interactivity,

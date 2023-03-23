@@ -151,7 +151,7 @@ export const CreateLeaderboardUpdateScheduledTrigger = async (
     typeof UpdateLeaderboardWorkflow.definition
   >({
     name: "Leaderboard Update Scheduled",
-    workflow: `#/workflows/update_leaderboard`,
+    workflow: `#/workflows/update_leaderboard_workflow`,
     type: "scheduled",
     schedule: {
       frequency: {
@@ -183,7 +183,7 @@ export const UpdateLeaderboardUpdateScheduledTrigger = async (
     typeof UpdateLeaderboardWorkflow.definition
   >({
     name: "Leaderboard Update Scheduled",
-    workflow: `#/workflows/update_leaderboard`,
+    workflow: `#/workflows/update_leaderboard_workflow`,
     type: "scheduled",
     schedule: {
       frequency: {

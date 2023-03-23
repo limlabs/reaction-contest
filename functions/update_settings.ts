@@ -61,9 +61,9 @@ export const loadSettings = async (client: SlackAPIClient) => {
 };
 
 export const UpdateSettingsFunctionDefinition = DefineFunction({
-  callback_id: "update_channels",
+  callback_id: "update_settings",
   title: "Creates, updates, or deletes reaction event triggers",
-  source_file: "functions/update_channels.ts",
+  source_file: "functions/update_settings.ts",
   input_parameters: {
     properties: {
       newChannels: {
