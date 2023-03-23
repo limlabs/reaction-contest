@@ -6,8 +6,10 @@ import {
   Trigger,
 } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
 import { ReactionEventType } from "../domain/reaction.ts";
+import AppMentionedWorkflow from "../workflows/app_mentioned_workflow.ts";
+import UpdateLeaderboardWorkflow from "../workflows/update_leaderboard_workflow.ts";
 
-const makeTriggerParams = (
+const makeReactionTriggerParams = (
   newChannels: string[],
   action: ReactionEventType,
 ): Trigger<typeof HandleReactionWorkflow.definition> => {
@@ -36,7 +38,7 @@ export const CreateReactionEventTrigger = async (
 ) => {
   const createTriggerResponse = await client.workflows.triggers.create<
     typeof HandleReactionWorkflow.definition
-  >(makeTriggerParams(newChannels, action));
+  >(makeReactionTriggerParams(newChannels, action));
 
   if (!createTriggerResponse.ok) {
     throw new Error(
@@ -56,14 +58,17 @@ export const CreateReactionEventTrigger = async (
 
 export const UpdateReactionEventTrigger = async (
   client: SlackAPIClient,
-  newChannels: string[],
   triggerId: string,
+  newChannels: string[],
   action: ReactionEventType,
 ) => {
   const updateTriggerResponse = await client.workflows.triggers.update<
     typeof HandleReactionWorkflow.definition
   >(
-    { ...makeTriggerParams(newChannels, action), trigger_id: triggerId },
+    {
+      ...makeReactionTriggerParams(newChannels, action),
+      trigger_id: triggerId,
+    },
   );
 
   if (!updateTriggerResponse.ok) {
@@ -75,6 +80,131 @@ export const UpdateReactionEventTrigger = async (
   }
 
   return updateTriggerResponse;
+};
+
+export const CreateAppMentionedEventTrigger = async (
+  client: SlackAPIClient,
+  newChannels: string[],
+) => {
+  const response = await client.workflows.triggers.create<
+    typeof AppMentionedWorkflow.definition
+  >({
+    name: "App Mentioned",
+    workflow: `#/workflows/app_mentioned`,
+    type: "event",
+    event: {
+      event_type: "slack#/events/app_mentioned",
+      channel_ids: newChannels as PopulatedArray<string>,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to create App Mentioned Trigger: ${response.error}`,
+    );
+  }
+
+  console.log(
+    `App Mentioned trigger created with id`,
+    response.trigger.id,
+  );
+
+  return response;
+};
+
+export const UpdateAppMentionedEventTrigger = async (
+  client: SlackAPIClient,
+  triggerId: string,
+  newChannels: string[],
+) => {
+  const response = await client.workflows.triggers.update<
+    typeof AppMentionedWorkflow.definition
+  >({
+    trigger_id: triggerId,
+    name: "App Mentioned",
+    workflow: `#/workflows/app_mentioned`,
+    type: "event",
+    event: {
+      event_type: "slack#/events/app_mentioned",
+      channel_ids: newChannels as PopulatedArray<string>,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to create App Mentioned Trigger: ${response.error}`,
+    );
+  }
+
+  console.log(
+    `App Mentioned trigger created with id`,
+    response.trigger.id,
+  );
+
+  return response;
+};
+
+export const CreateLeaderboardUpdateScheduledTrigger = async (
+  client: SlackAPIClient,
+) => {
+  const response = await client.workflows.triggers.create<
+    typeof UpdateLeaderboardWorkflow.definition
+  >({
+    name: "Leaderboard Update Scheduled",
+    workflow: `#/workflows/update_leaderboard`,
+    type: "scheduled",
+    schedule: {
+      frequency: {
+        type: "hourly",
+      },
+      start_time: new Date(Date.now() + 1000 * 5).toISOString(),
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(
+      `failed to create App Mentioned Trigger: ${response.error}`,
+    );
+  }
+
+  console.log(
+    `App Mentioned trigger created with id`,
+    response.trigger.id,
+  );
+
+  return response;
+};
+
+export const UpdateLeaderboardUpdateScheduledTrigger = async (
+  client: SlackAPIClient,
+  triggerId: string,
+) => {
+  const response = await client.workflows.triggers.update<
+    typeof UpdateLeaderboardWorkflow.definition
+  >({
+    name: "Leaderboard Update Scheduled",
+    workflow: `#/workflows/update_leaderboard`,
+    type: "scheduled",
+    schedule: {
+      frequency: {
+        type: "hourly",
+      },
+      start_time: new Date(Date.now() + 1000 * 5).toISOString(),
+    },
+    trigger_id: triggerId,
+  });
+  if (!response.ok) {
+    throw new Error(
+      `failed to create App Mentioned Trigger: ${response.error}`,
+    );
+  }
+
+  console.log(
+    `App Mentioned trigger created with id`,
+    response.trigger.id,
+  );
+
+  return response;
 };
 
 export const DeleteTrigger = async (

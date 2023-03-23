@@ -1,9 +1,9 @@
 import * as mf from "mock-fetch/mod.ts";
 import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
-import UpdateChannelsFunction from "./update_channels.ts";
+import UpdateSettingsFunction from "./update_settings.ts";
 
-const { createContext } = SlackFunctionTester("update_leaderboard");
+const { createContext } = SlackFunctionTester("update_settings");
 
 mf.install();
 
@@ -53,7 +53,7 @@ mf.mock("POST@/api/workflows.triggers.delete", () => {
   );
 });
 
-Deno.test("UpdateChannelsFunction runs with empty datastore and with user input", async () => {
+Deno.test("UpdateSettingsFunction runs with empty datastore and with user input", async () => {
   mf.mock("POST@/api/apps.datastore.query", () => {
     return new Response(
       JSON.stringify({
@@ -65,13 +65,13 @@ Deno.test("UpdateChannelsFunction runs with empty datastore and with user input"
 
   const inputs = { newChannels: ["mockChannelOne", "mockChannelTwo"] };
 
-  const { error } = await UpdateChannelsFunction(
+  const { error } = await UpdateSettingsFunction(
     createContext({ inputs }),
   );
   assertEquals(error, undefined);
 });
 
-Deno.test("UpdateChannelsFunction runs with something in datastore and user input", async () => {
+Deno.test("UpdateSettingsFunction runs with something in datastore and user input", async () => {
   mf.mock("POST@/api/apps.datastore.query", () => {
     return new Response(
       JSON.stringify({
@@ -87,13 +87,13 @@ Deno.test("UpdateChannelsFunction runs with something in datastore and user inpu
 
   const inputs = { newChannels: ["mockChannelOne", "mockChannelTwo"] };
 
-  const { error } = await UpdateChannelsFunction(
+  const { error } = await UpdateSettingsFunction(
     createContext({ inputs }),
   );
   assertEquals(error, undefined);
 });
 
-Deno.test("UpdateChannelsFunction runs with something in datastore and no user input", async () => {
+Deno.test("UpdateSettingsFunction runs with something in datastore and no user input", async () => {
   mf.mock("POST@/api/apps.datastore.query", () => {
     return new Response(
       JSON.stringify({
@@ -109,7 +109,7 @@ Deno.test("UpdateChannelsFunction runs with something in datastore and no user i
 
   const inputs = { newChannels: [] };
 
-  const { error } = await UpdateChannelsFunction(
+  const { error } = await UpdateSettingsFunction(
     createContext({ inputs }),
   );
   assertEquals(error, undefined);

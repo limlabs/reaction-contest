@@ -1,11 +1,11 @@
 import { DefineWorkflow, Schema } from "deno-slack-sdk/mod.ts";
 import { GetTriggerDataFunctionDefinition } from "../functions/get_trigger_data.ts";
-import { UpdateChannelsFunctionDefinition } from "../functions/update_channels.ts";
+import { UpdateSettingsFunctionDefinition } from "../functions/update_settings.ts";
 
-const UpdateChannelsWorkflow = DefineWorkflow({
-  callback_id: "update_channels_workflow",
-  title: "Update active channels",
-  description: "Update active channels for reaction event triggers.",
+const SetupWorkflow = DefineWorkflow({
+  callback_id: "setup_workflow",
+  title: "Setup Reaction Contest",
+  description: "Setup and manage Reaction Contest in this workspace",
   input_parameters: {
     properties: {
       interactivity: { type: Schema.slack.types.interactivity },
@@ -15,19 +15,19 @@ const UpdateChannelsWorkflow = DefineWorkflow({
   },
 });
 
-const triggerData = UpdateChannelsWorkflow.addStep(
+const triggerData = SetupWorkflow.addStep(
   GetTriggerDataFunctionDefinition,
-  { interactivity: UpdateChannelsWorkflow.inputs.interactivity },
+  { interactivity: SetupWorkflow.inputs.interactivity },
 );
 
-const inputForm = UpdateChannelsWorkflow.addStep(
+const inputForm = SetupWorkflow.addStep(
   Schema.slack.functions.OpenForm,
   {
-    title: "Submit active channels",
+    title: "Configure Reaction Contest",
     description:
-      "Select channels to listen for reactions, or submit empty form to delete all listeners.",
+      "Select channels to listen for reactions. Once you're done, select 'Finish Setup' to install and use @Reaction Contest!",
     interactivity: triggerData.outputs.interactivity,
-    submit_label: "Submit channels",
+    submit_label: "Finish Setup",
     fields: {
       elements: [
         {
@@ -47,8 +47,17 @@ const inputForm = UpdateChannelsWorkflow.addStep(
   },
 );
 
-UpdateChannelsWorkflow.addStep(UpdateChannelsFunctionDefinition, {
+SetupWorkflow.addStep(UpdateSettingsFunctionDefinition, {
   newChannels: inputForm.outputs.fields.channels,
 });
 
-export default UpdateChannelsWorkflow;
+SetupWorkflow.addStep(
+  Schema.slack.functions.SendMessage,
+  {
+    channel_id: SetupWorkflow.inputs.channel,
+    message:
+      ":hands_raised: Setup complete. Looks like Reaction Contest is good to go! :sunglasses:",
+  },
+);
+
+export default SetupWorkflow;
