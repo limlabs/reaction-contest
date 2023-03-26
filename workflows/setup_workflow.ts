@@ -23,7 +23,7 @@ const triggerData = SetupWorkflow.addStep(
 const inputForm = SetupWorkflow.addStep(
   Schema.slack.functions.OpenForm,
   {
-    title: "SetupReactionContest",
+    title: "Setup Reaction Contest",
     description:
       "Select channels to listen for reactions. Once you're done, select 'Finish Setup' to install and use @Reaction Contest!",
     interactivity: triggerData.outputs.interactivity,
@@ -47,6 +47,14 @@ const inputForm = SetupWorkflow.addStep(
   },
 );
 
+SetupWorkflow.addStep(
+  Schema.slack.functions.SendMessage,
+  {
+    channel_id: SetupWorkflow.inputs.channel,
+    message: "Finishing things up, one sec! :hourglass_flowing_sand:",
+  },
+);
+
 SetupWorkflow.addStep(UpdateSettingsFunctionDefinition, {
   newChannels: inputForm.outputs.fields.channels,
 });
@@ -56,7 +64,7 @@ SetupWorkflow.addStep(
   {
     channel_id: SetupWorkflow.inputs.channel,
     message:
-      ":hands_raised: Setup complete. Looks like Reaction Contest is good to go! :sunglasses:",
+      ":tada: Setup complete. Looks like Reaction Contest is good to go! :sunglasses:",
   },
 );
 

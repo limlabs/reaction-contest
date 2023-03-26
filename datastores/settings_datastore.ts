@@ -1,7 +1,7 @@
 import { DefineDatastore, Schema } from "deno-slack-sdk/mod.ts";
 
 import { appPrefix } from "../core/config.ts";
-export const SettingsDatastoreName = `${appPrefix}-triggers`;
+export const SettingsDatastoreName = `${appPrefix}-settings`;
 
 export const CurrentSettingsVersion = "v1";
 

@@ -9,9 +9,9 @@ import {
   CreateLeaderboardUpdateScheduledTrigger,
   CreateReactionEventTrigger,
   DeleteTrigger,
-  UpdateAppMentionedEventTrigger,
   UpdateLeaderboardUpdateScheduledTrigger,
   UpdateReactionEventTrigger,
+  UpdateViewLoaderboardEventTrigger,
 } from "./runtime_event_trigger_functions.ts";
 
 export const saveTriggers = async (
@@ -24,19 +24,23 @@ export const saveTriggers = async (
     leaderboard_update_scheduled: string;
   }>,
 ) => {
+  const item = {
+    version: CurrentSettingsVersion,
+    trigger_channel_ids: channelIds,
+    ...Object.entries(triggerIds).reduce(
+      (out, [triggerName, triggerId]) => ({
+        ...out,
+        [`${triggerName}_trigger_id`]: triggerId,
+      }),
+      {},
+    ),
+  };
+
+  console.log(item);
+
   const response = await client.apps.datastore.update({
     datastore: SettingsDatastoreName,
-    item: {
-      id: CurrentSettingsVersion,
-      trigger_channel_ids: channelIds,
-      ...Object.entries(triggerIds).reduce(
-        (out, [triggerName, triggerId]) => ({
-          ...out,
-          [`${triggerName}_trigger_id`]: triggerId,
-        }),
-        {},
-      ),
-    },
+    item,
   });
   if (!response.ok) {
     throw new Error(
@@ -154,7 +158,7 @@ const persistStoredTriggers = async (
       channelIds,
     );
   } else {
-    updateAppMentionedTask = UpdateAppMentionedEventTrigger(
+    updateAppMentionedTask = UpdateViewLoaderboardEventTrigger(
       client,
       appMentionedTriggerId,
       channelIds,

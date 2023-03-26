@@ -6,8 +6,8 @@ import {
   Trigger,
 } from "https://deno.land/x/deno_slack_api@1.5.0/types.ts";
 import { ReactionEventType } from "../domain/reaction.ts";
-import AppMentionedWorkflow from "../workflows/app_mentioned_workflow.ts";
 import UpdateLeaderboardWorkflow from "../workflows/update_leaderboard_workflow.ts";
+import ViewLeaderboardWorkflow from "../workflows/view_leaderboard_workflow.ts";
 
 const makeReactionTriggerParams = (
   newChannels: string[],
@@ -27,6 +27,25 @@ const makeReactionTriggerParams = (
     inputs: {
       ...handleReactionInputsBase,
       action: { value: action },
+    },
+  };
+};
+
+const makeViewLeaderboardTriggerParams = (
+  newChannels: string[],
+): Trigger<typeof ViewLeaderboardWorkflow.definition> => {
+  return {
+    name: "View Leaderboard",
+    workflow: `#/workflows/view_leaderboard_workflow`,
+    type: "event",
+    inputs: {
+      channelId: {
+        value: "{{data.channel_id}}",
+      },
+    },
+    event: {
+      event_type: "slack#/events/app_mentioned",
+      channel_ids: newChannels as PopulatedArray<string>,
     },
   };
 };
@@ -86,17 +105,9 @@ export const CreateAppMentionedEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
 ) => {
-  const response = await client.workflows.triggers.create<
-    typeof AppMentionedWorkflow.definition
-  >({
-    name: "App Mentioned",
-    workflow: `#/workflows/app_mentioned`,
-    type: "event",
-    event: {
-      event_type: "slack#/events/app_mentioned",
-      channel_ids: newChannels as PopulatedArray<string>,
-    },
-  });
+  const response = await client.workflows.triggers.create(
+    makeViewLeaderboardTriggerParams(newChannels),
+  );
 
   if (!response.ok) {
     throw new Error(
@@ -112,22 +123,14 @@ export const CreateAppMentionedEventTrigger = async (
   return response;
 };
 
-export const UpdateAppMentionedEventTrigger = async (
+export const UpdateViewLoaderboardEventTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
   newChannels: string[],
 ) => {
-  const response = await client.workflows.triggers.update<
-    typeof AppMentionedWorkflow.definition
-  >({
+  const response = await client.workflows.triggers.update({
+    ...makeViewLeaderboardTriggerParams(newChannels),
     trigger_id: triggerId,
-    name: "App Mentioned",
-    workflow: `#/workflows/app_mentioned`,
-    type: "event",
-    event: {
-      event_type: "slack#/events/app_mentioned",
-      channel_ids: newChannels as PopulatedArray<string>,
-    },
   });
 
   if (!response.ok) {
@@ -137,7 +140,7 @@ export const UpdateAppMentionedEventTrigger = async (
   }
 
   console.log(
-    `App Mentioned trigger created with id`,
+    `View Leaderboard trigger created with id`,
     response.trigger.id,
   );
 
