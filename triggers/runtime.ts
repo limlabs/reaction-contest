@@ -66,7 +66,7 @@ const makeLeaderboardUpdateScheduledTriggerParams = (): Trigger<
   };
 };
 
-export const CreateReactionEventTrigger = async (
+export const createReactionEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
   action: ReactionEventType,
@@ -91,7 +91,7 @@ export const CreateReactionEventTrigger = async (
   return createTriggerResponse;
 };
 
-export const UpdateReactionEventTrigger = async (
+export const updateReactionEventTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
   newChannels: string[],
@@ -122,7 +122,7 @@ export const UpdateReactionEventTrigger = async (
   return updateTriggerResponse;
 };
 
-export const CreateViewLeaderboardEventTrigger = async (
+export const createViewLeaderboardEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
 ) => {
@@ -144,7 +144,7 @@ export const CreateViewLeaderboardEventTrigger = async (
   return response;
 };
 
-export const UpdateViewLoaderboardEventTrigger = async (
+export const updateViewLoaderboardEventTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
   newChannels: string[],
@@ -168,7 +168,7 @@ export const UpdateViewLoaderboardEventTrigger = async (
   return response;
 };
 
-export const CreateLeaderboardUpdateScheduledTrigger = async (
+export const createLeaderboardUpdateScheduledTrigger = async (
   client: SlackAPIClient,
 ) => {
   const response = await client.workflows.triggers.create(
@@ -189,7 +189,7 @@ export const CreateLeaderboardUpdateScheduledTrigger = async (
   return response;
 };
 
-export const UpdateLeaderboardUpdateScheduledTrigger = async (
+export const updateLeaderboardUpdateScheduledTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
 ) => {
@@ -212,7 +212,7 @@ export const UpdateLeaderboardUpdateScheduledTrigger = async (
   return response;
 };
 
-export const DeleteTrigger = async (
+export const deleteTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
 ) => {

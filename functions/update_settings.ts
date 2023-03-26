@@ -4,15 +4,16 @@ import {
   CurrentSettingsVersion,
   SettingsDatastoreName,
 } from "../datastores/settings_datastore.ts";
+
 import {
-  CreateLeaderboardUpdateScheduledTrigger,
-  CreateReactionEventTrigger,
-  CreateViewLeaderboardEventTrigger,
-  DeleteTrigger,
-  UpdateLeaderboardUpdateScheduledTrigger,
-  UpdateReactionEventTrigger,
-  UpdateViewLoaderboardEventTrigger,
-} from "./runtime_event_trigger_functions.ts";
+  createLeaderboardUpdateScheduledTrigger,
+  createReactionEventTrigger,
+  createViewLeaderboardEventTrigger,
+  deleteTrigger,
+  updateLeaderboardUpdateScheduledTrigger,
+  updateReactionEventTrigger,
+  updateViewLoaderboardEventTrigger,
+} from "../triggers/runtime.ts";
 
 export const saveTriggers = async (
   client: SlackAPIClient,
@@ -113,13 +114,13 @@ const persistStoredTriggers = async (
 
   let reactionAddedTask;
   if (!reactionAddedTriggerId) {
-    reactionAddedTask = CreateReactionEventTrigger(
+    reactionAddedTask = createReactionEventTrigger(
       client,
       channelIds,
       "added",
     );
   } else {
-    reactionAddedTask = UpdateReactionEventTrigger(
+    reactionAddedTask = updateReactionEventTrigger(
       client,
       reactionAddedTriggerId,
       channelIds,
@@ -131,13 +132,13 @@ const persistStoredTriggers = async (
 
   let reactionRemovedTask;
   if (!reactionRemovedTriggerId) {
-    reactionRemovedTask = CreateReactionEventTrigger(
+    reactionRemovedTask = createReactionEventTrigger(
       client,
       channelIds,
       "removed",
     );
   } else {
-    reactionRemovedTask = UpdateReactionEventTrigger(
+    reactionRemovedTask = updateReactionEventTrigger(
       client,
       reactionRemovedTriggerId,
       channelIds,
@@ -151,12 +152,12 @@ const persistStoredTriggers = async (
 
   let viewLeaderboardTask;
   if (!viewLeaderboardTriggerId) {
-    viewLeaderboardTask = CreateViewLeaderboardEventTrigger(
+    viewLeaderboardTask = createViewLeaderboardEventTrigger(
       client,
       channelIds,
     );
   } else {
-    viewLeaderboardTask = UpdateViewLoaderboardEventTrigger(
+    viewLeaderboardTask = updateViewLoaderboardEventTrigger(
       client,
       viewLeaderboardTriggerId,
       channelIds,
@@ -169,11 +170,11 @@ const persistStoredTriggers = async (
 
   let leaderboardUpdateScheduledTask;
   if (!leaderboardUpdateScheduledTriggerId) {
-    leaderboardUpdateScheduledTask = CreateLeaderboardUpdateScheduledTrigger(
+    leaderboardUpdateScheduledTask = createLeaderboardUpdateScheduledTrigger(
       client,
     );
   } else {
-    leaderboardUpdateScheduledTask = UpdateLeaderboardUpdateScheduledTrigger(
+    leaderboardUpdateScheduledTask = updateLeaderboardUpdateScheduledTrigger(
       client,
       leaderboardUpdateScheduledTriggerId,
     );
@@ -204,7 +205,7 @@ const clearStoredTriggers = async (
   const triggerIds = await loadTriggerIds(client);
   await Promise.all(
     Object.values(triggerIds).map(
-      (triggerId) => DeleteTrigger(client, triggerId),
+      (triggerId) => deleteTrigger(client, triggerId),
     ),
   );
 
