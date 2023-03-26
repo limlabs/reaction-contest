@@ -15,7 +15,7 @@ import SetupWorkflow from "./workflows/setup_workflow.ts";
 export default Manifest({
   name: "Reaction Contest",
   description: "A leaderboard that tracks the most popular emoji reactions.",
-  icon: "assets/cry-cat.png",
+  icon: "assets/logo.png",
   workflows: [
     HandleReactionAddedWorkflow,
     UpdateLeaderboardWorkflow,
