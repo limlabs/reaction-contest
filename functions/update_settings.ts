@@ -111,15 +111,15 @@ const persistStoredTriggers = async (
     leaderboardUpdateScheduledTriggerId,
   } = await loadTriggerIds(client);
 
-  let updateReactionAddedTask;
+  let reactionAddedTask;
   if (!reactionAddedTriggerId) {
-    updateReactionAddedTask = CreateReactionEventTrigger(
+    reactionAddedTask = CreateReactionEventTrigger(
       client,
       channelIds,
       "added",
     );
   } else {
-    updateReactionAddedTask = UpdateReactionEventTrigger(
+    reactionAddedTask = UpdateReactionEventTrigger(
       client,
       reactionAddedTriggerId,
       channelIds,
@@ -127,19 +127,17 @@ const persistStoredTriggers = async (
     );
   }
 
-  updateReactionAddedTask.then(({ trigger }) =>
-    reactionAddedTriggerId = trigger.id
-  );
+  reactionAddedTask.then(({ trigger }) => reactionAddedTriggerId = trigger.id);
 
-  let updateReactionRemovedTask;
+  let reactionRemovedTask;
   if (!reactionRemovedTriggerId) {
-    updateReactionRemovedTask = CreateReactionEventTrigger(
+    reactionRemovedTask = CreateReactionEventTrigger(
       client,
       channelIds,
       "removed",
     );
   } else {
-    updateReactionRemovedTask = UpdateReactionEventTrigger(
+    reactionRemovedTask = UpdateReactionEventTrigger(
       client,
       reactionRemovedTriggerId,
       channelIds,
@@ -147,48 +145,49 @@ const persistStoredTriggers = async (
     );
   }
 
-  updateReactionRemovedTask.then(({ trigger }) => {
+  reactionRemovedTask.then(({ trigger }) => {
     reactionRemovedTriggerId = trigger.id;
   });
 
-  let updateViewLeaderboardTask;
+  let viewLeaderboardTask;
   if (!viewLeaderboardTriggerId) {
-    updateViewLeaderboardTask = CreateViewLeaderboardEventTrigger(
+    viewLeaderboardTask = CreateViewLeaderboardEventTrigger(
       client,
       channelIds,
     );
   } else {
-    updateViewLeaderboardTask = UpdateViewLoaderboardEventTrigger(
+    viewLeaderboardTask = UpdateViewLoaderboardEventTrigger(
       client,
       viewLeaderboardTriggerId,
       channelIds,
     );
   }
 
-  updateViewLeaderboardTask.then(({ trigger }) => {
+  viewLeaderboardTask.then(({ trigger }) => {
     viewLeaderboardTriggerId = trigger.id;
   });
 
-  let updateLeaderboardScheduledTask;
+  let leaderboardUpdateScheduledTask;
   if (!leaderboardUpdateScheduledTriggerId) {
-    updateLeaderboardScheduledTask = CreateLeaderboardUpdateScheduledTrigger(
+    leaderboardUpdateScheduledTask = CreateLeaderboardUpdateScheduledTrigger(
       client,
     );
   } else {
-    updateLeaderboardScheduledTask = UpdateLeaderboardUpdateScheduledTrigger(
+    leaderboardUpdateScheduledTask = UpdateLeaderboardUpdateScheduledTrigger(
       client,
       leaderboardUpdateScheduledTriggerId,
     );
   }
 
-  updateLeaderboardScheduledTask.then(({ trigger }) => {
+  leaderboardUpdateScheduledTask.then(({ trigger }) => {
     leaderboardUpdateScheduledTriggerId = trigger.id;
   });
 
   await Promise.all([
-    updateReactionAddedTask,
-    updateReactionRemovedTask,
-    updateViewLeaderboardTask,
+    reactionAddedTask,
+    reactionRemovedTask,
+    viewLeaderboardTask,
+    leaderboardUpdateScheduledTask,
   ]);
 
   return {
