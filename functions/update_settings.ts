@@ -5,9 +5,9 @@ import {
   SettingsDatastoreName,
 } from "../datastores/settings_datastore.ts";
 import {
-  CreateAppMentionedEventTrigger,
   CreateLeaderboardUpdateScheduledTrigger,
   CreateReactionEventTrigger,
+  CreateViewLeaderboardEventTrigger,
   DeleteTrigger,
   UpdateLeaderboardUpdateScheduledTrigger,
   UpdateReactionEventTrigger,
@@ -89,13 +89,13 @@ const loadTriggerIds = async (client: SlackAPIClient) => {
   const settings = await loadSettings(client);
   const reactionAddedTriggerId = settings?.reaction_added_trigger_id;
   const reactionRemovedTriggerId = settings?.reaction_removed_trigger_id;
-  const appMentionedTriggerId = settings?.app_mentioned_trigger_id;
+  const viewLeaderboardTriggerId = settings?.view_leaderboard_trigger_id;
   const leaderboardUpdateScheduledTriggerId = settings
     ?.leaderboard_update_scheduled_trigger_id;
   return {
     reactionAddedTriggerId,
     reactionRemovedTriggerId,
-    appMentionedTriggerId,
+    viewLeaderboardTriggerId,
     leaderboardUpdateScheduledTriggerId,
   };
 };
@@ -107,7 +107,7 @@ const persistStoredTriggers = async (
   let {
     reactionAddedTriggerId,
     reactionRemovedTriggerId,
-    appMentionedTriggerId,
+    viewLeaderboardTriggerId,
     leaderboardUpdateScheduledTriggerId,
   } = await loadTriggerIds(client);
 
@@ -151,22 +151,22 @@ const persistStoredTriggers = async (
     reactionRemovedTriggerId = trigger.id;
   });
 
-  let updateAppMentionedTask;
-  if (!appMentionedTriggerId) {
-    updateAppMentionedTask = CreateAppMentionedEventTrigger(
+  let updateViewLeaderboardTask;
+  if (!viewLeaderboardTriggerId) {
+    updateViewLeaderboardTask = CreateViewLeaderboardEventTrigger(
       client,
       channelIds,
     );
   } else {
-    updateAppMentionedTask = UpdateViewLoaderboardEventTrigger(
+    updateViewLeaderboardTask = UpdateViewLoaderboardEventTrigger(
       client,
-      appMentionedTriggerId,
+      viewLeaderboardTriggerId,
       channelIds,
     );
   }
 
-  updateAppMentionedTask.then(({ trigger }) => {
-    appMentionedTriggerId = trigger.id;
+  updateViewLeaderboardTask.then(({ trigger }) => {
+    viewLeaderboardTriggerId = trigger.id;
   });
 
   let updateLeaderboardScheduledTask;
@@ -188,11 +188,11 @@ const persistStoredTriggers = async (
   await Promise.all([
     updateReactionAddedTask,
     updateReactionRemovedTask,
-    updateAppMentionedTask,
+    updateViewLeaderboardTask,
   ]);
 
   return {
-    appMentionedTriggerId,
+    viewLeaderboardTriggerId,
     reactionAddedTriggerId,
     reactionRemovedTriggerId,
     leaderboardUpdateScheduledTriggerId,
@@ -210,7 +210,7 @@ const clearStoredTriggers = async (
   );
 
   return {
-    appMentionedTriggerId: "",
+    viewLeaderboardTriggerId: "",
     reactionAddedTriggerId: "",
     reactionRemovedTriggerId: "",
     leaderboardUpdateScheduledTriggerId: "",
@@ -239,7 +239,7 @@ const UpdateSettingsFunction = SlackFunction(
       {
         reaction_added: newIds.reactionAddedTriggerId,
         reaction_removed: newIds.reactionRemovedTriggerId,
-        app_mentioned: newIds.appMentionedTriggerId,
+        app_mentioned: newIds.viewLeaderboardTriggerId,
         leaderboard_update_scheduled:
           newIds.leaderboardUpdateScheduledTriggerId,
       },

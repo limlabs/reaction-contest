@@ -101,7 +101,7 @@ export const UpdateReactionEventTrigger = async (
   return updateTriggerResponse;
 };
 
-export const CreateAppMentionedEventTrigger = async (
+export const CreateViewLeaderboardEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
 ) => {

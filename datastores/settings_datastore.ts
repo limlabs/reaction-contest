@@ -12,7 +12,7 @@ export const SettingsDatastoreSchema = {
     version: { type: Schema.types.string },
     reaction_added_trigger_id: { type: Schema.types.string },
     reaction_removed_trigger_id: { type: Schema.types.string },
-    app_mentioned_trigger_id: { type: Schema.types.string },
+    view_leaderboard_trigger_id: { type: Schema.types.string },
     leaderboard_update_scheduled_trigger_id: { type: Schema.types.string },
     trigger_channel_ids: {
       type: Schema.types.array,

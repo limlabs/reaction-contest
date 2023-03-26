@@ -63,8 +63,10 @@ SetupWorkflow.addStep(
   Schema.slack.functions.SendMessage,
   {
     channel_id: SetupWorkflow.inputs.channel,
-    message:
+    message: [
       ":tada: Setup complete. Looks like Reaction Contest is good to go! :sunglasses:",
+      "Invite and mention @Reaction Contest to view the current leaderboard in any channel.",
+    ].join("\n\n"),
   },
 );
 

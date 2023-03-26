@@ -38,7 +38,10 @@ export default SlackFunction(
     }
     if (leaderboardMessage === "*Reaction Contest Leaderboard*\n") {
       return {
-        outputs: { leaderboardMessage: "React to some posts!" },
+        outputs: {
+          leaderboardMessage:
+            "No reactions detected :yawning_face: React to some posts to get a leaderboard going!",
+        },
       };
     }
     return { outputs: { leaderboardMessage } };
