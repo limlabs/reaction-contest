@@ -50,6 +50,22 @@ const makeViewLeaderboardTriggerParams = (
   };
 };
 
+const makeLeaderboardUpdateScheduledTriggerParams = (): Trigger<
+  typeof UpdateLeaderboardWorkflow.definition
+> => {
+  return {
+    name: "Leaderboard Update Scheduled",
+    workflow: `#/workflows/update_leaderboard_workflow`,
+    type: "scheduled",
+    schedule: {
+      frequency: {
+        type: "hourly",
+      },
+      start_time: new Date(Date.now() + 1000 * 5).toISOString(),
+    },
+  };
+};
+
 export const CreateReactionEventTrigger = async (
   client: SlackAPIClient,
   newChannels: string[],
@@ -98,6 +114,11 @@ export const UpdateReactionEventTrigger = async (
     );
   }
 
+  console.log(
+    `reaction_${action} trigger updated with id`,
+    updateTriggerResponse.trigger.id,
+  );
+
   return updateTriggerResponse;
 };
 
@@ -111,12 +132,12 @@ export const CreateViewLeaderboardEventTrigger = async (
 
   if (!response.ok) {
     throw new Error(
-      `failed to create App Mentioned Trigger: ${response.error}`,
+      `failed to create view_leaderboard trigger: ${response.error}`,
     );
   }
 
   console.log(
-    `App Mentioned trigger created with id`,
+    `view_leaderboard trigger created with id`,
     response.trigger.id,
   );
 
@@ -135,12 +156,12 @@ export const UpdateViewLoaderboardEventTrigger = async (
 
   if (!response.ok) {
     throw new Error(
-      `failed to create App Mentioned Trigger: ${response.error}`,
+      `failed to create view_leaderboard trigger: ${response.error}`,
     );
   }
 
   console.log(
-    `View Leaderboard trigger created with id`,
+    `view_leaderboard trigger updated with id`,
     response.trigger.id,
   );
 
@@ -150,28 +171,18 @@ export const UpdateViewLoaderboardEventTrigger = async (
 export const CreateLeaderboardUpdateScheduledTrigger = async (
   client: SlackAPIClient,
 ) => {
-  const response = await client.workflows.triggers.create<
-    typeof UpdateLeaderboardWorkflow.definition
-  >({
-    name: "Leaderboard Update Scheduled",
-    workflow: `#/workflows/update_leaderboard_workflow`,
-    type: "scheduled",
-    schedule: {
-      frequency: {
-        type: "hourly",
-      },
-      start_time: new Date(Date.now() + 1000 * 5).toISOString(),
-    },
-  });
+  const response = await client.workflows.triggers.create(
+    makeLeaderboardUpdateScheduledTriggerParams(),
+  );
 
   if (!response.ok) {
     throw new Error(
-      `failed to create App Mentioned Trigger: ${response.error}`,
+      `failed to create leaderboard_udpate_scheduled Trigger: ${response.error}`,
     );
   }
 
   console.log(
-    `App Mentioned trigger created with id`,
+    `leaderboard_udpate_scheduled trigger created with id`,
     response.trigger.id,
   );
 
@@ -182,28 +193,19 @@ export const UpdateLeaderboardUpdateScheduledTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
 ) => {
-  const response = await client.workflows.triggers.update<
-    typeof UpdateLeaderboardWorkflow.definition
-  >({
-    name: "Leaderboard Update Scheduled",
-    workflow: `#/workflows/update_leaderboard_workflow`,
-    type: "scheduled",
-    schedule: {
-      frequency: {
-        type: "hourly",
-      },
-      start_time: new Date(Date.now() + 1000 * 5).toISOString(),
-    },
+  const response = await client.workflows.triggers.update({
+    ...makeLeaderboardUpdateScheduledTriggerParams(),
     trigger_id: triggerId,
   });
+
   if (!response.ok) {
     throw new Error(
-      `failed to create App Mentioned Trigger: ${response.error}`,
+      `failed to create leaderboard_udpate_scheduled Trigger: ${response.error}`,
     );
   }
 
   console.log(
-    `App Mentioned trigger created with id`,
+    `leaderboard_udpate_scheduled trigger updated with id`,
     response.trigger.id,
   );
 
