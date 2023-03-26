@@ -12,7 +12,7 @@ import {
   deleteTrigger,
   updateLeaderboardUpdateScheduledTrigger,
   updateReactionEventTrigger,
-  updateViewLoaderboardEventTrigger,
+  updateViewLeaderboardEventTrigger,
 } from "../triggers/runtime.ts";
 
 export const saveTriggers = async (
@@ -157,7 +157,7 @@ const persistStoredTriggers = async (
       channelIds,
     );
   } else {
-    viewLeaderboardTask = updateViewLoaderboardEventTrigger(
+    viewLeaderboardTask = updateViewLeaderboardEventTrigger(
       client,
       viewLeaderboardTriggerId,
       channelIds,

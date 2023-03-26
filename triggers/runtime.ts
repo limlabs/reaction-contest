@@ -144,7 +144,7 @@ export const createViewLeaderboardEventTrigger = async (
   return response;
 };
 
-export const updateViewLoaderboardEventTrigger = async (
+export const updateViewLeaderboardEventTrigger = async (
   client: SlackAPIClient,
   triggerId: string,
   newChannels: string[],
