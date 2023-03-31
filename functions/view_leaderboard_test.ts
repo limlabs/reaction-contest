@@ -97,7 +97,7 @@ Deno.test("View leaderboard doesn't show reactions with a 0 count", async () => 
   ];
 
   const mockLeaderboardMessage =
-    "*Reaction Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n";
+    ":fire: *Reaction Contest Leaderboard* :fire:\n1st - :grinning: - used 100 times\n2nd - :smiley: - used 80 times\n3rd - :face_with_peeking_eye: - used 75 times\n";
 
   mf.mock(
     "POST@/api/apps.datastore.query",
