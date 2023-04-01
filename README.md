@@ -1,4 +1,9 @@
-# Overview
+# Reaction Contest
+
+<a href="https://www.buymeacoffee.com/limlabs"><img src="https://img.buymeacoffee.com/button-api/?text=Support creative opportunity&emoji=🎨&slug=limlabs&button_colour=3f3fe4&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00" /></a>
+
+## Overview
+
 
 Welcome! Reaction Contest is an open source Slack app that keeps track of emoji
 reactions used in your workspace to generate a leaderboard of the most popular
