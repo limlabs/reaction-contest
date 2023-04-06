@@ -17,7 +17,7 @@ Deno.test("View leaderboard function returns proper text with multiple things on
   ];
 
   const mockLeaderboardMessage =
-    "*Reaction Contest Leaderboard*\n1. :grinning: was used 100 times\n2. :smiley: was used 80 times\n3. :face_with_peeking_eye: was used 75 times\n4. :sob: was used 30 times\n5. :eggplant: was used 15 times\n";
+    ":fire: *Reaction Contest Leaderboard* :fire:\n1st - :grinning: - used 100 times\n2nd - :smiley: - used 80 times\n3rd - :face_with_peeking_eye: - used 75 times\n4th - :sob: - used 30 times\n5th - :eggplant: - used 15 times\n";
 
   mf.mock("POST@/api/apps.datastore.query", () => {
     return new Response(
@@ -38,7 +38,8 @@ Deno.test("View leaderboard function returns proper text with multiple things on
 Deno.test("View leaderboard returns special message when leaderboard is empty", async () => {
   const mockLeaderboardData: never[] = [];
 
-  const mockLeaderboardMessage = "React to some posts!";
+  const mockLeaderboardMessage =
+    "No reactions detected :yawning_face: React to some posts to get a leaderboard going!";
 
   mf.mock(
     "POST@/api/apps.datastore.query",
@@ -67,7 +68,8 @@ Deno.test("View leaderboard returns special message when leaderboard data only h
     { reaction: "eggplant", count: 0 },
   ];
 
-  const mockLeaderboardMessage = "React to some posts!";
+  const mockLeaderboardMessage =
+    "No reactions detected :yawning_face: React to some posts to get a leaderboard going!";
 
   mf.mock(
     "POST@/api/apps.datastore.query",
