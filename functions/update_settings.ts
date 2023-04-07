@@ -61,7 +61,6 @@ export const loadSettings = async (client: SlackAPIClient) => {
       `failed to get trigger data from datastore: ${response.error}`,
     );
   }
-
   return response.items[0];
 };
 

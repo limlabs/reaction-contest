@@ -2,12 +2,21 @@ import * as mf from "mock-fetch/mod.ts";
 import { SlackFunctionTester } from "deno-slack-sdk/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.178.0/testing/asserts.ts";
 import UpdateSettingsFunction from "./update_settings.ts";
+import { SettingsDatastoreName } from "../datastores/settings_datastore.ts";
 
 const { createContext } = SlackFunctionTester("update_settings");
 
 mf.install();
 
 mf.mock("POST@/api/apps.datastore.put", () => {
+  return new Response(
+    JSON.stringify({
+      ok: true,
+    }),
+  );
+});
+
+mf.mock("POST@/api/apps.datastore.update", () => {
   return new Response(
     JSON.stringify({
       ok: true,
