@@ -20,6 +20,14 @@ const ViewLeaderboardWorkflow = DefineWorkflow({
 });
 
 ViewLeaderboardWorkflow.addStep(
+  Schema.slack.functions.SendMessage,
+  {
+    channel_id: ViewLeaderboardWorkflow.inputs.channelId,
+    message: "C r o n c h ing the latest stats, one moment please...",
+  },
+);
+
+ViewLeaderboardWorkflow.addStep(
   UpdateLeaderboardFunctionDefinition,
   {},
 );

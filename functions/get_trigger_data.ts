@@ -4,12 +4,12 @@ import {
   Schema,
   SlackFunction,
 } from "deno-slack-sdk/mod.ts";
-import { TriggerDatastoreName } from "../datastores/trigger_datastore.ts";
+import { SettingsDatastoreName } from "../datastores/settings_datastore.ts";
 
 export const TriggerDatastoreResponseType = DefineType({
   title: "TriggerDatastore response",
   description: "Data from the TriggerDatastore",
-  name: "trigger_datastore_data",
+  name: "settings_datastore_data",
   type: Schema.types.object,
   properties: {
     channels: { type: Schema.types.string },
@@ -52,7 +52,7 @@ const GetTriggerDataFunction = SlackFunction(
   GetTriggerDataFunctionDefinition,
   async ({ client, inputs }) => {
     const response = await client.apps.datastore.query({
-      datastore: TriggerDatastoreName,
+      datastore: SettingsDatastoreName,
     });
     if (!response.ok) {
       throw new Error(

@@ -4,16 +4,17 @@ import { appPrefix } from "../core/config.ts";
 import { ReactionLeaderboard } from "../domain/leaderboard.ts";
 
 export const LeaderboardDatastoreName = `${appPrefix}-leaderboard`;
-
-export const LeaderboardDatastore = DefineDatastore({
+export const LeaderboardDatastoreSchema = {
   name: LeaderboardDatastoreName,
-  primary_key: "name",
+  primary_key: "name" as const,
   attributes: {
     name: { type: Schema.types.string }, // store the original reaction id
     last_updated_timestamp: { type: Schema.types.integer }, // store the last time the leaderboard was updated
     data: { type: Schema.types.string }, // stored as a string to keep the type flexible
   },
-});
+};
+
+export const LeaderboardDatastore = DefineDatastore(LeaderboardDatastoreSchema);
 
 export const saveLeaderboard = async (
   client: SlackAPIClient,

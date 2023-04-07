@@ -5,7 +5,10 @@ import {
   topReactions,
 } from "../domain/leaderboard.ts";
 import { SlackAPIClient } from "https://deno.land/x/deno_slack_api@1.7.0/types.ts";
-import { LeaderboardDatastoreName } from "../datastores/leaderboard_datastore.ts";
+import {
+  LeaderboardDatastoreName,
+  LeaderboardDatastoreSchema,
+} from "../datastores/leaderboard_datastore.ts";
 import {
   ReactionDatastoreName,
   ReactionDatastoreSchema,
@@ -57,7 +60,9 @@ export const saveLeaderboard = async (
 export const getLeaderboardInfo = async (
   client: SlackAPIClient,
 ) => {
-  const response = await client.apps.datastore.query({
+  const response = await client.apps.datastore.query<
+    typeof LeaderboardDatastoreSchema
+  >({
     datastore: LeaderboardDatastoreName,
   });
 
@@ -73,11 +78,13 @@ export const getLeaderboardInfo = async (
       last_updated_timestamp: Date.now(),
     };
   }
+
   return {
     ...response.items[0],
-    data: JSON.parse(response.items[0].data),
-    // deno-lint-ignore no-explicit-any
-  } as any;
+    data: JSON.parse(response.items[0].data).filter((
+      l: { count: number },
+    ) => l.count > 0),
+  };
 };
 
 export const getReactionsSince = async (

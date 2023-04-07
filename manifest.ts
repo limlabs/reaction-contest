@@ -4,8 +4,8 @@ import ViewLeaderboardWorkflow from "./workflows/view_leaderboard_workflow.ts";
 import HandleReactionAddedWorkflow from "./workflows/handle_reaction_workflow.ts";
 import UpdateLeaderboardWorkflow from "./workflows/update_leaderboard_workflow.ts";
 import { LeaderboardDatastore } from "./datastores/leaderboard_datastore.ts";
-import { TriggerDatastore } from "./datastores/trigger_datastore.ts";
-import UpdateChannelsWorkflow from "./workflows/update_channels_workflow.ts";
+import { SettingsDatastore } from "./datastores/settings_datastore.ts";
+import SetupWorkflow from "./workflows/setup_workflow.ts";
 
 /**
  * The app manifest contains the app's configuration. This
@@ -15,27 +15,28 @@ import UpdateChannelsWorkflow from "./workflows/update_channels_workflow.ts";
 export default Manifest({
   name: "Reaction Contest",
   description: "A leaderboard that tracks the most popular emoji reactions.",
-  icon: "assets/cry-cat.png",
+  icon: "assets/logo.png",
   workflows: [
     HandleReactionAddedWorkflow,
     UpdateLeaderboardWorkflow,
     ViewLeaderboardWorkflow,
-    UpdateChannelsWorkflow,
+    SetupWorkflow,
   ],
   outgoingDomains: [],
-  datastores: [ReactionDatastore, LeaderboardDatastore, TriggerDatastore],
+  datastores: [ReactionDatastore, LeaderboardDatastore, SettingsDatastore],
   functions: [],
   botScopes: [
+    "app_mentions:read",
     "commands",
     "chat:write",
     "chat:write.public",
-    "reactions:read",
     "datastore:read",
     "datastore:write",
     "channels:history",
     "groups:history",
     "im:read",
     "mpim:read",
+    "reactions:read",
     "triggers:write",
   ],
 });
