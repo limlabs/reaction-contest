@@ -8,13 +8,16 @@ import {
 import { ReactionEventType } from "../domain/reaction.ts";
 import UpdateLeaderboardWorkflow from "../workflows/update_leaderboard_workflow.ts";
 import ViewLeaderboardWorkflow from "../workflows/view_leaderboard_workflow.ts";
+import { TriggerTypes } from "https://deno.land/x/deno_slack_api@1.7.0/typed-method-types/workflows/triggers/mod.ts";
+import { TriggerEventTypes } from "https://deno.land/x/deno_slack_api@1.7.0/typed-method-types/workflows/triggers/trigger-event-types.ts";
+import { SCHEDULE_FREQUENCY } from "https://deno.land/x/deno_slack_api@1.7.0/typed-method-types/workflows/triggers/scheduled.ts";
 
 const makeReactionTriggerParams = (
   newChannels: string[],
   action: ReactionEventType,
 ): Trigger<typeof HandleReactionWorkflow.definition> => {
   return {
-    type: "event",
+    type: TriggerTypes.Event,
     name: action === "added" ? "ReactionAdded" : "ReactionRemoved",
     description: `Handles when user ${
       action === "added" ? "adds" : "removes"
@@ -37,14 +40,14 @@ const makeViewLeaderboardTriggerParams = (
   return {
     name: "View Leaderboard",
     workflow: `#/workflows/view_leaderboard_workflow`,
-    type: "event",
+    type: TriggerTypes.Event,
     inputs: {
       channelId: {
         value: "{{data.channel_id}}",
       },
     },
     event: {
-      event_type: "slack#/events/app_mentioned",
+      event_type: TriggerEventTypes.AppMentioned,
       channel_ids: newChannels as PopulatedArray<string>,
     },
   };
@@ -56,10 +59,10 @@ const makeLeaderboardUpdateScheduledTriggerParams = (): Trigger<
   return {
     name: "Leaderboard Update Scheduled",
     workflow: `#/workflows/update_leaderboard_workflow`,
-    type: "scheduled",
+    type: TriggerTypes.Scheduled,
     schedule: {
       frequency: {
-        type: "hourly",
+        type: SCHEDULE_FREQUENCY.Hourly,
       },
       start_time: new Date(Date.now() + 1000 * 5).toISOString(),
     },
